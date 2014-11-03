@@ -3,7 +3,24 @@
 
 #include <Arduino.h>
 
+// declaration of static class and it's variables
 DisplayControlClass DisplayControl;
+
+byte DisplayControlClass::values[LED_DISPLAYS_CNT];  // values to be send
+byte DisplayControlClass::DPstate[LED_DISPLAYS_CNT]; // dot-point state
+
+unsigned int DisplayControlClass::currBigValue;
+unsigned int DisplayControlClass::currSmallValue;
+
+byte DisplayControlClass::currShowMinus;
+byte DisplayControlClass::currBrightness;
+
+// display-connected variables
+DisplayState DisplayControlClass::displayState;
+byte DisplayControlClass::displayDigit;
+long int DisplayControlClass::timerCounter;
+long int DisplayControlClass::timerCounterOnEnd;
+long int DisplayControlClass::timerCounterOffEnd;
 
 static const byte digit_values[] = {
     0xFC, // 0 -> 1111 1100
