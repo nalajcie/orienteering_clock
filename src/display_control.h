@@ -28,8 +28,10 @@
 #define REFRESH_RATE 100 // in Hz
 
 // do not change these:
-#define ONE_CYCLE_US (1000000L / REFRESH_RATE)
-#define ONE_DIGIT_US (ONE_CYCLE_US / LED_DISPLAYS_CNT)
+#define ONE_CYCLE_MS (1000000L / REFRESH_RATE)
+#define ONE_DIGIT_MS (ONE_CYCLE_MS / LED_DISPLAYS_CNT)
+
+#define TIMER_DIVIDER_MS 16
 
 enum DisplayState {
     DISPLAY_ON,
@@ -50,16 +52,20 @@ public:
     // enable/disable dot point at given LED segment
     static inline void setDP(byte ledSegment, byte value);
 
+    // updating display in interrupt
+    static void updateDisplay();
+
 private:
     // populate values to be send
     static void computeBigValues();
     static void computeSmallValues();
 
-    // updating display in interrupt
-    static void updateDisplay();
+    // updating display timings 
+    static void updateTimings();
 
     // SPI setup routine
     static void setupSPI();
+    static inline byte spiTransfer(byte data);
 
 
     // variables
@@ -73,13 +79,16 @@ private:
     static byte currBrightness;
 
     // display-connected variables
-    static DisplayState dState;
-    static
+    static DisplayState displayState;
+    static byte displayDigit;
+    static long int timerCounter;
+    static long int timerCounterOnEnd;
+    static long int timerCounterOffEnd;
 };
 
 extern DisplayControlClass DisplayControl;
 
-static inline void DisplayControlClass::setValue(unsigned int bigValue, unsigned int smallValue, byte showMinus) {
+inline void DisplayControlClass::setValue(unsigned int bigValue, unsigned int smallValue, byte showMinus) {
     // for debug: check constraints
     if (bigValue > 9999 || (showMinus && bigValue > 999) || smallValue > 99)
         return;
@@ -96,23 +105,23 @@ static inline void DisplayControlClass::setValue(unsigned int bigValue, unsigned
     }
 }
 
-static inline void DisplayControlClass::setBrightness(byte brightness) {
+inline void DisplayControlClass::setBrightness(byte brightness) {
     if (brightness <= MAX_BRIGHTNESS && brightness >= MIN_BRIGHTNESS) {
         currBrightness = brightness;
     }
 }
-static inline void DisplayControlClass::incBrightness() {
+inline void DisplayControlClass::incBrightness() {
     if (currBrightness < MAX_BRIGHTNESS) {
         currBrightness += 1;
     }
 }
-static inline void DisplayControlClass::decBrightness() {
+inline void DisplayControlClass::decBrightness() {
     if (currBrightness > MIN_BRIGHTNESS) {
         currBrightness -= 1;
     }
 }
 
-static inline void DisplayControlClass::setDP(byte ledSegment, byte value) {
+inline void DisplayControlClass::setDP(byte ledSegment, byte value) {
     DPstate[ledSegment] = (value > 0);
     if (ledSegment < LED_DISPLAYS_BIG_CNT) {
         computeBigValues();
@@ -120,5 +129,12 @@ static inline void DisplayControlClass::setDP(byte ledSegment, byte value) {
         computeSmallValues();
     }
 }
+
+// hand-made SPI transfer routine
+inline byte DisplayControlClass::spiTransfer(byte data) {
+    SPDR = data;                    // Start the transmission
+    loop_until_bit_is_set(SPSR, SPIF); 
+    return SPDR;                    // return the received byte, we don't need that
+} 
 
 #endif //_DISPLAY_CONTROL_H

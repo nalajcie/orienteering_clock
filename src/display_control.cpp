@@ -24,7 +24,7 @@ static const byte digit_values[] = {
 #define LATCH_PIN_PORTB (DISPLAY_LATCH_PIN - 8)
 
 
-static void DisplayControlClass::setup() {
+void DisplayControlClass::setup() {
     // setup SPI
     pinMode(DISPLAY_LATCH_PIN, OUTPUT);
     setupSPI();
@@ -53,12 +53,11 @@ static void DisplayControlClass::setup() {
 
     sei();  // Continue allowing interrupts
 
-    // TODO: update delays to get reasonable values to _timerCounterOn/OffEnd.
-    //updDelay();
-    //_timerCounter=0;
+    // update delays to get reasonable values to timerCounterOn/OffEnd.
+    updateTimings();
 }
 
-static void DisplayControlClass::setupSPI() {
+void DisplayControlClass::setupSPI() {
     // use direct port mappings to omit SPI library
     byte clr;
     SPCR |= ((1<<SPE) | (1<<MSTR));   // enable SPI as master
@@ -69,74 +68,46 @@ static void DisplayControlClass::setupSPI() {
     delay(10);
 }
 
-static void DisplayControlClass::updateTimings() {
-
-    // On-time for each display is total time spent per digit times the duty cycle. The
-    // off-time is the rest of the cycle for the given display.
-
-    long int digitOnUS = (((long) ONE_DIGIT_US) * currBrightness) / MAX_BRIGHTNESS;
-    long int digitOffUS = ONE_DIGIT_US - digitOnUS;
-    _digitOnDelay=temp;
-    _digitOffDelay=_digitDelay-_digitOnDelay;
+void DisplayControlClass::updateTimings() {
+    long int digitOnMs = (((long) ONE_DIGIT_MS) * currBrightness) / MAX_BRIGHTNESS;
+    long int digitOffMs = ONE_DIGIT_MS - digitOnMs;
 
     // Artefacts in duty cycle control appeared when these values changed while interrupts happening (A kind of stepping in brightness appeared)
     cli();
-    _timerCounterOnEnd=(_digitOnDelay/16)-1;
-    _timerCounterOffEnd=(_digitOffDelay/16)-1;
-    if(_digitOnDelay==0) _timerCounterOnEnd=0;
-    if(_digitOffDelay==0) _timerCounterOffEnd=0;
-    _timerCounter=0;
+    timerCounterOnEnd = (digitOnMs == 0) ? 0 : ((digitOnMs / TIMER_DIVIDER_MS) - 1);
+    timerCounterOffEnd = (digitOffMs == 0) ? 0 : ((digitOffMs / TIMER_DIVIDER_MS) - 1);
+    timerCounter=0;
     sei();
 }
 
-
 // timed interrupt
-static void DisplayControlClass::updateDisplay() {
+void DisplayControlClass::updateDisplay() {
     // Increment the library's counter
-    _timerCounter++;
+    timerCounter++;
 
-    // Finished with on-part. Turn off digit, and switch to the off-phase (_timerPhase=0)
-    if((_timerCounter >= _timerCounterOnEnd) && (_timerPhase == 1)) {
-        _timerCounter=0;
-        _timerPhase=0;
-
+    if ((displayState == DISPLAY_ON) && (timerCounter >= timerCounterOnEnd)) {
+        // Finished with on-part. Turn off digit, and switch to the off-phase (_timerPhase=0)
+        timerCounter = 0;
+        displayState = DISPLAY_OFF;
         //TODO: set G pin high!
-    }
 
-    // Finished with the off-part. Switch to next digit and turn it on.
-    if((_timerCounter >= _timerCounterOffEnd)&&(_timerPhase == 0)) {
-        _timerCounter = 0;
-        _timerPhase=1;
-
-        _timerDigit++;
-
-        if (_timerDigit>=_numOfDigits) _timerDigit=0;
+    } else if ((displayState == DISPLAY_OFF) && (timerCounter >= timerCounterOffEnd)) {
+        // Finished with the off-part. Switch to next digit and turn it on.
+        timerCounter = 0;
+        displayState = DISPLAY_ON;
+        displayDigit = (displayDigit + 1) % LED_DISPLAYS_CNT;
 
         //TODO: display current digit
+        bitSet(PORTB, LATCH_PIN_PORTB);
+        spiTransfer(values[displayDigit]);  // segments to display current digits (low-side driver)
+        spiTransfer(1 << displayDigit);     // digit numer (high-side dirver)
+        bitClear(PORTB, LATCH_PIN_PORTB);
     }
-
-  // power off all digits
-  for(byte i = 0; i < DIGITS; ++i) {
-    //digitalWrite(digitPins[i], LOW);
-
-    byte val_to_send = (val >> (i * BITS_PER_DIGIT)) & (~(1<<BITS_PER_DIGIT));
-    //   Serial.print("val_to_send = ");
-    //   Serial.println(~val_to_send);
-
-    digitalWrite(latchPin, LOW);
-    shiftOut(dataPin, clockPin, MSBFIRST, ((~val_to_send)));
-    digitalWrite(latchPin, HIGH)
-
-    digitalWrite(digitPins[i], HIGH);
-    delayMicroseconds(duty_cycle * pwm_time / 10);
-    digitalWrite(digitPins[i], LOW);
-    delayMicroseconds((10-duty_cycle) * pwm_time / 10);
-
-  }
 }
 
+
 // TODO: display leading '0's in hour mode
-static void DisplayControlClass::computeBigValues() {
+void DisplayControlClass::computeBigValues() {
     int index = LED_DISPLAYS_BIG_CNT - 1;
     int value = currBigValue;
     int currDigit;
@@ -159,12 +130,12 @@ static void DisplayControlClass::computeBigValues() {
         }
     } while (index >= 0);
 
-    if (currShowMinus && valueEndIdx >= 0) {
+    if (currShowMinus && (valueEndIdx >= 0)) {
         values[valueEndIdx] = VALUE_MINUS | DPstate[index];
     }
 }
 
-static void DisplayControlClass::computeSmallValues() {
+void DisplayControlClass::computeSmallValues() {
     int index = LED_DISPLAYS_CNT - 1;
     int value = currSmallValue;
     int currDigit;
