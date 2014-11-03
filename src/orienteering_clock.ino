@@ -1,6 +1,7 @@
 //#include <toneAC.h>
 //#include <Bounce2.h>
 
+#include "display_control.h"
 
 //Pin connected to ST_CP of 74HC595
 const int latchPin = 8;
@@ -31,6 +32,8 @@ byte data = 0;
 unsigned long start;
 
 void setup() {
+    DisplayControl.setup();
+
   for (int i = 0; i < DIGITS; ++i) {
     pinMode(digitPins[i], OUTPUT);
   }
@@ -43,12 +46,12 @@ void setup() {
 
   pinMode(buttonPin, INPUT);
 
-  /*  
+  /*
    Serial.begin(9600);
    Serial.println("reset");
-   
+
    start = millis();
-   
+
    debouncer.attach(buttonPin);
    debouncer.interval(15);
    */
