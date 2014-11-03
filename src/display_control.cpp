@@ -2,7 +2,6 @@
 #include "hw.h"
 
 #include <Arduino.h>
-#include <SPI.h>
 
 DisplayControlClass DisplayControl;
 
@@ -23,12 +22,12 @@ static const byte digit_values[] = {
 
 // for quicker latching
 #define LATCH_PIN_PORTB (DISPLAY_LATCH_PIN - 8)
-  
+
 
 static void DisplayControlClass::setup() {
     // setup SPI
     pinMode(DISPLAY_LATCH_PIN, OUTPUT);
-    SPI.begin(); 
+    setupSPI();
 
     // compute initial values
     for (int i = 0; i < LED_DISPLAYS_CNT; ++i) {
@@ -37,19 +36,20 @@ static void DisplayControlClass::setup() {
 
     setBrightness(DEFAULT_BRIGHTNESS);
     setValue(DEFAULT_BIG_VALUE, DEFAULT_SMALL_VALUE, 1);
-    
-    // setup timer interrupt
+
+    // setup timer (2) interrupt
 
     cli();  // Temporarily stop interrupts
 
     // See registers in ATmega328 datasheet
-    TCCR0A = 0;
-    TCCR0B = 0;
-    TCNT0 = 0;					// Initialize counter value to 0
-    OCR0A = 3;					// Set Compare Match Register to 3
-    TCCR0A |= (1<<WGM01);			// Turn on CTC mode
-    TCCR0B |= (1<<CS01) | (1<<CS00);		// Set prescaler to 64
-    TIMSK0 |= (1<<OCIE0A);			// Enable timer compare interrupt
+    // the interrupt will be each (Clock_freq/64/3)
+    TCCR1A = 0;
+    TCCR1B = 0;
+    TCNT1  = 0;                             // Initialize counter value to 0
+    OCR1A = 3;                              // Set compare Match Register to 3
+    TCCR1B |= (1 << WGM12);		            // Turn on CTC mode
+    TCCR1B |= (1 << CS11) | (1 << CS10);    // Set prescaler to 64
+    TIMSK1 |= (1 << OCIE1A);                // Enable timer compare interrupt
 
     sei();  // Continue allowing interrupts
 
@@ -58,11 +58,65 @@ static void DisplayControlClass::setup() {
     //_timerCounter=0;
 }
 
+static void DisplayControlClass::setupSPI() {
+    // use direct port mappings to omit SPI library
+    byte clr;
+    SPCR |= ((1<<SPE) | (1<<MSTR));   // enable SPI as master
+    SPCR &= ~((1<<SPR1) | (1<<SPR0)); // clear prescaler bits
+    clr = SPSR; // clear SPI status reg
+    clr = SPDR; // clear SPI data reg
+    SPSR |= (1<<SPI2X); // set prescaler bits
+    delay(10);
+}
+
+static void DisplayControlClass::updateTimings() {
+
+    // On-time for each display is total time spent per digit times the duty cycle. The
+    // off-time is the rest of the cycle for the given display.
+
+    long int digitOnUS = (((long) ONE_DIGIT_US) * currBrightness) / MAX_BRIGHTNESS;
+    long int digitOffUS = ONE_DIGIT_US - digitOnUS;
+    _digitOnDelay=temp;
+    _digitOffDelay=_digitDelay-_digitOnDelay;
+
+    // Artefacts in duty cycle control appeared when these values changed while interrupts happening (A kind of stepping in brightness appeared)
+    cli();
+    _timerCounterOnEnd=(_digitOnDelay/16)-1;
+    _timerCounterOffEnd=(_digitOffDelay/16)-1;
+    if(_digitOnDelay==0) _timerCounterOnEnd=0;
+    if(_digitOffDelay==0) _timerCounterOffEnd=0;
+    _timerCounter=0;
+    sei();
+}
+
 
 // timed interrupt
 static void DisplayControlClass::updateDisplay() {
-  // power off all digits 
-  for(byte i = 0; i < DIGITS; ++i) {  
+    // Increment the library's counter
+    _timerCounter++;
+
+    // Finished with on-part. Turn off digit, and switch to the off-phase (_timerPhase=0)
+    if((_timerCounter >= _timerCounterOnEnd) && (_timerPhase == 1)) {
+        _timerCounter=0;
+        _timerPhase=0;
+
+        //TODO: set G pin high!
+    }
+
+    // Finished with the off-part. Switch to next digit and turn it on.
+    if((_timerCounter >= _timerCounterOffEnd)&&(_timerPhase == 0)) {
+        _timerCounter = 0;
+        _timerPhase=1;
+
+        _timerDigit++;
+
+        if (_timerDigit>=_numOfDigits) _timerDigit=0;
+
+        //TODO: display current digit
+    }
+
+  // power off all digits
+  for(byte i = 0; i < DIGITS; ++i) {
     //digitalWrite(digitPins[i], LOW);
 
     byte val_to_send = (val >> (i * BITS_PER_DIGIT)) & (~(1<<BITS_PER_DIGIT));
@@ -71,7 +125,7 @@ static void DisplayControlClass::updateDisplay() {
 
     digitalWrite(latchPin, LOW);
     shiftOut(dataPin, clockPin, MSBFIRST, ((~val_to_send)));
-    digitalWrite(latchPin, HIGH);
+    digitalWrite(latchPin, HIGH)
 
     digitalWrite(digitPins[i], HIGH);
     delayMicroseconds(duty_cycle * pwm_time / 10);
@@ -89,7 +143,7 @@ static void DisplayControlClass::computeBigValues() {
     int valueEndIdx = -1;
 
     // set ALL value registers to clear previous digits and set DPstate
-    // use do-while to display at least one '0' 
+    // use do-while to display at least one '0'
     do {
         currDigit = value % 10;
         value = value / 10;
@@ -122,4 +176,9 @@ static void DisplayControlClass::computeSmallValues() {
         values[index] = digit_values[currDigit] | DPstate[index];
         index -= 1;
     } while (index >= LED_DISPLAYS_BIG_CNT);
+}
+
+// connect updateDisplay to timer(2) interrupt
+ISR(TIMER1_COMPA_vect) {
+    DisplayControl.updateDisplay();
 }

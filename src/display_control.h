@@ -21,9 +21,20 @@
 #define MIN_BRIGHTNESS 1
 #define MAX_BRIGHTNESS 10
 
-#define DEFAULT_BIG_VALUE   (10)
+#define DEFAULT_BIG_VALUE   10
 #define DEFAULT_SMALL_VALUE 0
-#define DEFAULT_BRIGHTNESS 7
+#define DEFAULT_BRIGHTNESS  7
+
+#define REFRESH_RATE 100 // in Hz
+
+// do not change these:
+#define ONE_CYCLE_US (1000000L / REFRESH_RATE)
+#define ONE_DIGIT_US (ONE_CYCLE_US / LED_DISPLAYS_CNT)
+
+enum DisplayState {
+    DISPLAY_ON,
+    DISPLAY_OFF,
+};
 
 class DisplayControlClass {
 public:
@@ -40,8 +51,15 @@ public:
     static inline void setDP(byte ledSegment, byte value);
 
 private:
-    static void computeBigValues();   // populate values to be send
-    static void computeSmallValues(); // populate values to be send
+    // populate values to be send
+    static void computeBigValues();
+    static void computeSmallValues();
+
+    // updating display in interrupt
+    static void updateDisplay();
+
+    // SPI setup routine
+    static void setupSPI();
 
 
     // variables
@@ -53,6 +71,10 @@ private:
 
     static byte currShowMinus;
     static byte currBrightness;
+
+    // display-connected variables
+    static DisplayState dState;
+    static
 };
 
 extern DisplayControlClass DisplayControl;
