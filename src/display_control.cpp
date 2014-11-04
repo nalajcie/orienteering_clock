@@ -3,6 +3,11 @@
 
 #include <Arduino.h>
 
+/* TODO: license
+ *
+ * Some code based on SevenSeg library by Sigvald Marholm (http://playground.arduino.cc/Main/SevenSeg)
+ */
+
 // declaration of static class and it's variables
 DisplayControlClass DisplayControl;
 
@@ -37,16 +42,18 @@ static const byte digit_values[] = {
 
 #define VALUE_MINUS (2) // - -> 0000 0010
 
-// for quicker latching
+// for quicker pin switching
 #define LATCH_PIN_PORTB (DISPLAY_LATCH_PIN - 8)
-
+#define G_PIN_PORTB     (DISPLAY_G_PIN - 8)
 
 void DisplayControlClass::setup() {
-    // setup SPI
+
+    // setup pins
+    pinMode(DISPLAY_G_PIN, OUTPUT);
     pinMode(DISPLAY_LATCH_PIN, OUTPUT);
     setupSPI();
 
-    // compute initial values
+    // init values
     for (int i = 0; i < LED_DISPLAYS_CNT; ++i) {
         DPstate[i] = 0;
     }
@@ -59,7 +66,7 @@ void DisplayControlClass::setup() {
     cli();  // Temporarily stop interrupts
 
     // See registers in ATmega328 datasheet
-    // the interrupt will be each (Clock_freq/64/3)
+    // the interrupt will be each (Clock_freq/(64*3))
     TCCR1A = 0;
     TCCR1B = 0;
     TCNT1  = 0;                             // Initialize counter value to 0
@@ -70,7 +77,7 @@ void DisplayControlClass::setup() {
 
     sei();  // Continue allowing interrupts
 
-    // update delays to get reasonable values to timerCounterOn/OffEnd.
+    // update timings to get reasonable values to timerCounterOn/OffEnd.
     updateTimings();
 }
 
@@ -106,22 +113,25 @@ void DisplayControlClass::updateDisplay() {
         // Finished with on-part. Turn off digit, and switch to the off-phase (_timerPhase=0)
         timerCounter = 0;
         displayState = DISPLAY_OFF;
-        //TODO: set G pin high!
 
+        // setting G pin high will quickly disable the outputs
+        bitSet(PORTB, G_PIN_PORTB);
     } else if ((displayState == DISPLAY_OFF) && (timerCounter >= timerCounterOffEnd)) {
         // Finished with the off-part. Switch to next digit and turn it on.
         timerCounter = 0;
         displayState = DISPLAY_ON;
         displayDigit = (displayDigit + 1) % LED_DISPLAYS_CNT;
 
-        //TODO: display current digit
+        // display next digit
         bitSet(PORTB, LATCH_PIN_PORTB);
         spiTransfer(values[displayDigit]);  // segments to display current digits (low-side driver)
-        spiTransfer(1 << displayDigit);     // digit numer (high-side dirver)
+        spiTransfer(1 << displayDigit);     // digit numer (high-side driver)
         bitClear(PORTB, LATCH_PIN_PORTB);
+
+        // enable high-side driver outputs
+        bitClear(PORTB, G_PIN_PORTB);
     }
 }
-
 
 // TODO: display leading '0's in hour mode
 void DisplayControlClass::computeBigValues() {
@@ -135,7 +145,7 @@ void DisplayControlClass::computeBigValues() {
     do {
         currDigit = value % 10;
         value = value / 10;
-        values[index] = digit_values[currDigit] | DPstate[index];
+        values[index] = ~(digit_values[currDigit] | DPstate[index]); // negation because of Common-Anode
         index -= 1;
 
         // check if value has ended and mark first free slot
@@ -143,7 +153,7 @@ void DisplayControlClass::computeBigValues() {
             valueEndIdx = index;
         } else {
             // value has already ended, do not display zeros
-            values[index] = DPstate[index];
+            values[index] = ~(DPstate[index]); // negation because of Common-Anode
         }
     } while (index >= 0);
 
