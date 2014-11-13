@@ -26,13 +26,15 @@ void setup() {
 
     //set pins to output because they are addressed in the main loop
     pinMode(buzzerPin, OUTPUT);
+
+    /*
     pinMode(9, OUTPUT);
     pinMode(10, OUTPUT);
     pinMode(11, OUTPUT);
     pinMode(13, OUTPUT);
+    */
 
     // BUTTONS: Make input & enable pull-up resistors on switch pins
-
     for (int i = 0; i < NUMBUTTONS; ++i) {
         pinMode(buttons[i], INPUT);
         digitalWrite(buttons[i], HIGH);
@@ -41,11 +43,10 @@ void setup() {
     //DisplayControl.setValue(1234, 88, 0);
     //DisplayControl.updateDisplay();
     //DisplayControl.setDP(3, 1);
-   
+
     // start with "-600 seconds"
     //time_offset = (-600L)*1000 + millis();
     time_offset = -60000L + millis();
-    Serial.println(time_offset);
 }
 
 // BUTTONS: check the buttons state (with debouncing)
@@ -123,17 +124,6 @@ void loop() {
 
 */
 /*
-if (debouncer.update()) {
-    buttonState = debouncer.read();
-    if (buttonState == HIGH) {
-    pwm_time = pwm_time * 10;
-    Serial.println(pwm_time);
-    } else {
-    Serial.println(pwm_time);
-    }
-    }
-    */
-/*
     // BUTTONS: handle button presses
     check_switches();
     if (pressed[BUTTON_SET_IDX]) {
@@ -158,13 +148,13 @@ if (debouncer.update()) {
 */
     // update time
     long int curr_secs = millis() + time_offset;
+    long int curr_ms = curr_secs % 1000;
     curr_secs = curr_secs / 1000;
     unsigned int curr_mins = abs(curr_secs / 60);
     unsigned int only_secs = abs(curr_secs % 60);
     //DisplayControl.setValue(curr_mins, only_secs, (curr_secs < 0));
     DisplayControl.setValue(abs(curr_secs), 0, (curr_secs < 0));
     DisplayControl.setBrightness(only_secs % 10 + 1);
-
 
     // TODO: handle buzzer
 }

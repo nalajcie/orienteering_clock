@@ -47,7 +47,9 @@ static const byte digit_values[] = {
 #define G_PIN_PORTB     (DISPLAY_G_PIN - 8)
 
 void DisplayControlClass::setup() {
+#ifdef DEBUG_DISPLAY
     Serial.println("DC::setup");
+#endif
 
     // setup pins
     pinMode(DISPLAY_G_PIN, OUTPUT);
@@ -103,14 +105,14 @@ void DisplayControlClass::updateTimings() {
     cli();
     timerCounterOnEnd = (digitOnMs == 0) ? 0 : ((digitOnMs / TIMER_DIVIDER_MS) - 1);
     timerCounterOffEnd = (digitOffMs == 0) ? 0 : ((digitOffMs / TIMER_DIVIDER_MS) - 1);
-    //timerCounter=0;
     sei();
-    /*
+
+#ifdef DEBUG_DISPLAY
     Serial.print("TIMINGS: timerCounterOnEnd = ");
     Serial.print(timerCounterOnEnd);
     Serial.print(", timerCounterOffEnd = ");
     Serial.println(timerCounterOffEnd);
-    */
+#endif
 }
 
 // timed interrupt
@@ -136,9 +138,8 @@ void DisplayControlClass::updateDisplay() {
         // display next digit
         spiTransfer(values[displayDigit]);  // segments to display current digits (low-side driver)
         spiTransfer(1 << displayDigit);     // digit numer (high-side driver)
-        
+
         bitClear(PORTB, LATCH_PIN_PORTB);
-        
         bitSet(PORTB, LATCH_PIN_PORTB);
 
         // enable high-side driver outputs
@@ -174,16 +175,15 @@ void DisplayControlClass::computeBigValues() {
     if (currShowMinus && (valueEndIdx >= 0)) {
         values[valueEndIdx] = VALUE_MINUS | DPstate[index];
     }
-    //DEBUG:
-    /*
-    for (int i = 0; i < LED_DISPLAYS_CNT; ++i) {
-      Serial.print("values[");
-      Serial.print(i);
-      Serial.print("] = ");
-      Serial.println(values[i]);
-    }
-   */
 
+#ifdef DEBUG_DISPLAY
+    for (int i = 0; i < LED_DISPLAYS_CNT; ++i) {
+        Serial.print("values[");
+        Serial.print(i);
+        Serial.print("] = ");
+        Serial.println(values[i]);
+    }
+#endif
 }
 
 void DisplayControlClass::computeSmallValues() {

@@ -13,6 +13,9 @@
 
 #include <Arduino.h>
 
+// enable for debugging
+//#define DEBUG_DISPLAY
+
 // configuration
 #define LED_DISPLAYS_BIG_CNT  4
 #define LED_DISPLAYS_SMALL_CNT  2
@@ -60,7 +63,7 @@ private:
     static void computeBigValues();
     static void computeSmallValues();
 
-    // updating display timings 
+    // updating display timings
     static void updateTimings();
 
     // SPI setup routine
@@ -139,8 +142,8 @@ inline void DisplayControlClass::setDP(byte ledSegment, byte value) {
 // hand-made SPI transfer routine
 inline byte DisplayControlClass::spiTransfer(byte data) {
     SPDR = data;                    // Start the transmission
-    loop_until_bit_is_set(SPSR, SPIF); 
+    loop_until_bit_is_set(SPSR, SPIF);
     return SPDR;                    // return the received byte, we don't need that
-} 
+}
 
 #endif //_DISPLAY_CONTROL_H

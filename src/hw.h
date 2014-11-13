@@ -5,6 +5,7 @@
 #define CURR_HW_REVISION 1
 
 
+
 #if CURR_HW_REVISION == 1
 /***** Arduino UNO Rev 3 ******/
 #define DISPLAY_G_PIN            9 /* for quickly holding every output of high-side driver LOW */
