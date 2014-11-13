@@ -28,28 +28,30 @@ long int DisplayControlClass::timerCounterOnEnd;
 long int DisplayControlClass::timerCounterOffEnd;
 
 static const byte digit_values[] = {
-    0xFC, // 0 -> 1111 1100
-    0x60, // 1 -> 0110 0000
-    0xDA, // 2 -> 1101 1010
-    0xF2, // 3 -> 1111 0010
-    0x66, // 4 -> 0110 0110
-    0xB6, // 5 -> 1011 0110
-    0xBE, // 6 -> 1011 1110
-    0xE0, // 7 -> 1110 0000
-    0xFE, // 8 -> 1111 1110
-    0xF6, // 9 -> 1111 0110
+    0x3F, // 0 -> 1111 1100 MSB = 0011 1111 LSB
+    0x06, // 1 -> 0110 0000 MSB = 0000 0110 LSB
+    0x5B, // 2 -> 1101 1010 MSB = 0101 1011 LSB
+    0x4F, // 3 -> 1111 0010 MSB = 0100 1111 LSB
+    0x66, // 4 -> 0110 0110 MSB = 0110 0110 LSB
+    0x6D, // 5 -> 1011 0110 MSB = 0110 1101 LSB
+    0x7D, // 6 -> 1011 1110 MSB = 0111 1101 LSB
+    0x07, // 7 -> 1110 0000 MSB = 0000 0111 LSB
+    0x7F, // 8 -> 1111 1110 MSB = 0111 1111 LSB
+    0x6F, // 9 -> 1111 0110 MSB = 0110 1111 LSB
 };
 
-#define VALUE_MINUS (2) // - -> 0000 0010
+#define VALUE_MINUS (0x40) // - -> 0100 0000
 
 // for quicker pin switching
 #define LATCH_PIN_PORTB (DISPLAY_LATCH_PIN - 8)
 #define G_PIN_PORTB     (DISPLAY_G_PIN - 8)
 
 void DisplayControlClass::setup() {
+    Serial.println("DC::setup");
 
     // setup pins
     pinMode(DISPLAY_G_PIN, OUTPUT);
+    digitalWrite(DISPLAY_G_PIN, LOW);
     pinMode(DISPLAY_LATCH_PIN, OUTPUT);
     setupSPI();
 
@@ -58,11 +60,12 @@ void DisplayControlClass::setup() {
         DPstate[i] = 0;
     }
 
-    setBrightness(DEFAULT_BRIGHTNESS);
+    setBrightness(1);//DEFAULT_BRIGHTNESS);
     setValue(DEFAULT_BIG_VALUE, DEFAULT_SMALL_VALUE, 1);
+    displayState = DISPLAY_OFF;
+    displayDigit = LED_DISPLAYS_CNT - 1;
 
     // setup timer (2) interrupt
-
     cli();  // Temporarily stop interrupts
 
     // See registers in ATmega328 datasheet
@@ -71,7 +74,7 @@ void DisplayControlClass::setup() {
     TCCR1B = 0;
     TCNT1  = 0;                             // Initialize counter value to 0
     OCR1A = 3;                              // Set compare Match Register to 3
-    TCCR1B |= (1 << WGM12);		            // Turn on CTC mode
+    TCCR1B |= (1 << WGM12);                 // Turn on CTC mode
     TCCR1B |= (1 << CS11) | (1 << CS10);    // Set prescaler to 64
     TIMSK1 |= (1 << OCIE1A);                // Enable timer compare interrupt
 
@@ -100,8 +103,14 @@ void DisplayControlClass::updateTimings() {
     cli();
     timerCounterOnEnd = (digitOnMs == 0) ? 0 : ((digitOnMs / TIMER_DIVIDER_MS) - 1);
     timerCounterOffEnd = (digitOffMs == 0) ? 0 : ((digitOffMs / TIMER_DIVIDER_MS) - 1);
-    timerCounter=0;
+    //timerCounter=0;
     sei();
+    /*
+    Serial.print("TIMINGS: timerCounterOnEnd = ");
+    Serial.print(timerCounterOnEnd);
+    Serial.print(", timerCounterOffEnd = ");
+    Serial.println(timerCounterOffEnd);
+    */
 }
 
 // timed interrupt
@@ -117,16 +126,20 @@ void DisplayControlClass::updateDisplay() {
         // setting G pin high will quickly disable the outputs
         bitSet(PORTB, G_PIN_PORTB);
     } else if ((displayState == DISPLAY_OFF) && (timerCounter >= timerCounterOffEnd)) {
-        // Finished with the off-part. Switch to next digit and turn it on.
+
+      // Finished with the off-part. Switch to next digit and turn it on.
         timerCounter = 0;
         displayState = DISPLAY_ON;
         displayDigit = (displayDigit + 1) % LED_DISPLAYS_CNT;
 
+        bitSet(PORTB, G_PIN_PORTB);
         // display next digit
-        bitSet(PORTB, LATCH_PIN_PORTB);
         spiTransfer(values[displayDigit]);  // segments to display current digits (low-side driver)
         spiTransfer(1 << displayDigit);     // digit numer (high-side driver)
+        
         bitClear(PORTB, LATCH_PIN_PORTB);
+        
+        bitSet(PORTB, LATCH_PIN_PORTB);
 
         // enable high-side driver outputs
         bitClear(PORTB, G_PIN_PORTB);
@@ -145,21 +158,32 @@ void DisplayControlClass::computeBigValues() {
     do {
         currDigit = value % 10;
         value = value / 10;
-        values[index] = ~(digit_values[currDigit] | DPstate[index]); // negation because of Common-Anode
-        index -= 1;
+        values[index] = digit_values[currDigit] | DPstate[index];
 
         // check if value has ended and mark first free slot
         if (valueEndIdx < 0 && value == 0) {
-            valueEndIdx = index;
-        } else {
+            valueEndIdx = index - 1;
+        } else if (valueEndIdx >= 0) {
             // value has already ended, do not display zeros
-            values[index] = ~(DPstate[index]); // negation because of Common-Anode
+            values[index] = DPstate[index];
         }
+
+        index -= 1;
     } while (index >= 0);
 
     if (currShowMinus && (valueEndIdx >= 0)) {
         values[valueEndIdx] = VALUE_MINUS | DPstate[index];
     }
+    //DEBUG:
+    /*
+    for (int i = 0; i < LED_DISPLAYS_CNT; ++i) {
+      Serial.print("values[");
+      Serial.print(i);
+      Serial.print("] = ");
+      Serial.println(values[i]);
+    }
+   */
+
 }
 
 void DisplayControlClass::computeSmallValues() {

@@ -25,7 +25,7 @@
 #define DEFAULT_SMALL_VALUE 0
 #define DEFAULT_BRIGHTNESS  7
 
-#define REFRESH_RATE 100 // in Hz
+#define REFRESH_RATE 80 // in Hz
 
 // do not change these:
 #define ONE_CYCLE_MS (1000000L / REFRESH_RATE)
@@ -90,8 +90,11 @@ extern DisplayControlClass DisplayControl;
 
 inline void DisplayControlClass::setValue(unsigned int bigValue, unsigned int smallValue, byte showMinus) {
     // for debug: check constraints
-    if (bigValue > 9999 || (showMinus && bigValue > 999) || smallValue > 99)
+    if (bigValue > 9999 || (showMinus && bigValue > 999) || smallValue > 99) {
+        Serial.print("Value too big: ");
+        Serial.println(bigValue);
         return;
+    }
 
     if (bigValue != currBigValue || showMinus != currShowMinus) {
         currBigValue = bigValue;
@@ -109,20 +112,23 @@ inline void DisplayControlClass::setBrightness(byte brightness) {
     if (brightness <= MAX_BRIGHTNESS && brightness >= MIN_BRIGHTNESS) {
         currBrightness = brightness;
     }
+    updateTimings();
 }
 inline void DisplayControlClass::incBrightness() {
     if (currBrightness < MAX_BRIGHTNESS) {
         currBrightness += 1;
     }
+    updateTimings();
 }
 inline void DisplayControlClass::decBrightness() {
     if (currBrightness > MIN_BRIGHTNESS) {
         currBrightness -= 1;
     }
+    updateTimings();
 }
 
 inline void DisplayControlClass::setDP(byte ledSegment, byte value) {
-    DPstate[ledSegment] = (value > 0);
+    DPstate[ledSegment] = (value > 0) ? 0x80 : 0;
     if (ledSegment < LED_DISPLAYS_BIG_CNT) {
         computeBigValues();
     } else {
