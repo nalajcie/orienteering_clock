@@ -17,7 +17,7 @@ byte buttons[] = {BUTTON_UP, BUTTON_DOWN, BUTTON_SET, BUTTON_MODE};
 byte pressed[NUMBUTTONS], justpressed[NUMBUTTONS], justreleased[NUMBUTTONS];
 
 const int buzzerPin = 3;
-const int buzzerLed = 3;
+const int buzzerLed = 5;
 
 int buzzerState = 0;
 int buzzerActive = 1;
@@ -39,33 +39,21 @@ void setup() {
     //set pins to output because they are addressed in the main loop
     pinMode(buzzerPin, OUTPUT);
 
-    /*
-    pinMode(9, OUTPUT);
-    pinMode(10, OUTPUT);
-    pinMode(11, OUTPUT);
-    pinMode(13, OUTPUT);
-    */
-
     // BUTTONS: Make input & enable pull-up resistors on switch pins
     for (int i = 0; i < NUMBUTTONS; ++i) {
         pinMode(buttons[i], INPUT);
         digitalWrite(buttons[i], HIGH);
     }
 
-    //DisplayControl.setValue(8888, 88, 0);
+    //DisplayControl.setValue(10, 40, 1);
     //DisplayControl.updateDisplay();
-    /*
-    for (int i = 0; i < 6; ++i) {
-        DisplayControl.setDP(i, 0);
-    }
-    */
-
-    // start with "-600 seconds"
-    //time_offset = (-600L)*1000 + millis();
-    time_offset = -60000L;
 
     // enable buzzer LED if needed
     DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
+
+    // start with "-600 seconds"
+    //time_offset = (-600L)*1000 + millis();
+    time_offset = -600000L - millis();
 }
 
 // BUTTONS: check the buttons state (with debouncing)
@@ -188,9 +176,12 @@ void loop() {
     if (justpressed[BUTTON_MODE_IDX]) {
         // toggle buzzer
         buzzerActive = !buzzerActive;
+        if (!buzzerActive && buzzerState) { // buzzer is now "playing" - silence it
+            buzzerState = 0;
+            digitalWrite(buzzerPin, 0);
+        }
         DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
     }
-
 
     // update time
     long int curr_secs = millis() + time_offset;

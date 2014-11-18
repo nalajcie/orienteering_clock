@@ -8,6 +8,7 @@
  * Some code based on SevenSeg library by Sigvald Marholm (http://playground.arduino.cc/Main/SevenSeg)
  */
 
+#define DEBUG_DISPLAY
 // declaration of static class and it's variables
 DisplayControlClass DisplayControl;
 
@@ -87,6 +88,10 @@ void DisplayControlClass::setup() {
 }
 
 void DisplayControlClass::setupSPI() {
+    pinMode(10, OUTPUT);
+    pinMode(11, OUTPUT);
+    pinMode(13, OUTPUT);
+
     // use direct port mappings to omit SPI library
     byte clr;
     SPCR |= ((1<<SPE) | (1<<MSTR));   // enable SPI as master
@@ -173,7 +178,7 @@ void DisplayControlClass::computeBigValues() {
     } while (index >= 0);
 
     if (currShowMinus && (valueEndIdx >= 0)) {
-        values[valueEndIdx] = VALUE_MINUS | DPstate[index];
+        values[valueEndIdx] = VALUE_MINUS | DPstate[valueEndIdx];
     }
 
 #ifdef DEBUG_DISPLAY
@@ -187,7 +192,7 @@ void DisplayControlClass::computeBigValues() {
 }
 
 void DisplayControlClass::computeSmallValues() {
-    int index = LED_DISPLAYS_CNT - 1;
+    int index = LED_DISPLAYS_BIG_CNT + LED_DISPLAYS_SMALL_CNT - 1;
     int value = currSmallValue;
     int currDigit;
 
