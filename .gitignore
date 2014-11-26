@@ -1,4 +1,5 @@
 schematics/*.s#?
 schematics/*.b#?
+schematics/*.l#?
 
 schematics/eagle.epf
