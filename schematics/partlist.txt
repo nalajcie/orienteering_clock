@@ -1,0 +1,61 @@
+Partlist
+
+Exported from display_driver.sch at 28.11.2014 14:49
+
+EAGLE Version 7.1.0 Copyright (c) 1988-2014 CadSoft
+
+Assembly variant: 
+
+Part     Value          Device       Package   Library        Sheet
+
+A_B1                    1,6/0,9      1,6/0,9   wirepad        1
+A_B2                    1,6/0,9      1,6/0,9   wirepad        1
+A_B3                    1,6/0,9      1,6/0,9   wirepad        1
+A_B4                    1,6/0,9      1,6/0,9   wirepad        1
+A_S1                    1,6/0,9      1,6/0,9   wirepad        1
+A_S2                    1,6/0,9      1,6/0,9   wirepad        1
+BUZZ1    F/BC40         F/BC40       F/BC40    buzzer         1
+CONTROL1 JP_1           PINHD-2X5    2X05      pinhead        1
+C_LA                    1,6/0,9      1,6/0,9   wirepad        1
+C_LB                    1,6/0,9      1,6/0,9   wirepad        1
+C_LC                    1,6/0,9      1,6/0,9   wirepad        1
+C_LD                    1,6/0,9      1,6/0,9   wirepad        1
+C_LE                    1,6/0,9      1,6/0,9   wirepad        1
+C_LF                    1,6/0,9      1,6/0,9   wirepad        1
+C_LG                    1,6/0,9      1,6/0,9   wirepad        1
+C_LSA                   1,6/0,9      1,6/0,9   wirepad        1
+C_LSB                   1,6/0,9      1,6/0,9   wirepad        1
+C_LSC                   1,6/0,9      1,6/0,9   wirepad        1
+C_LSD                   1,6/0,9      1,6/0,9   wirepad        1
+C_LSE                   1,6/0,9      1,6/0,9   wirepad        1
+C_LSF                   1,6/0,9      1,6/0,9   wirepad        1
+C_LSG                   1,6/0,9      1,6/0,9   wirepad        1
+IC1      TPIC6B595N     TPIC6B595N   DIL20     NumericDisplay 1
+IC2      TPIC6B595N     TPIC6B595N   DIL20     NumericDisplay 1
+Q1       IRFU9024V      IRFU9024V    TO251AA-V MINE           1
+Q2       IRFU9024V      IRFU9024V    TO251AA-V MINE           1
+Q3       IRFU9024V      IRFU9024V    TO251AA-V MINE           1
+Q4       IRFU9024V      IRFU9024V    TO251AA-V MINE           1
+Q5       IRFU9024V      IRFU9024V    TO251AA-V MINE           1
+Q6       IRFU9024V      IRFU9024V    TO251AA-V MINE           1
+R1       22k            R-US_0204/5  0204/5    resistor       1
+R2       22k            R-US_0204/5  0204/5    resistor       1
+R3       22k            R-US_0204/5  0204/5    resistor       1
+R4       22k            R-US_0204/5  0204/5    resistor       1
+R5       22k            R-US_0204/5  0204/5    resistor       1
+R6       22k            R-US_0204/5  0204/5    resistor       1
+R7       22R            R-US_0207/12 0207/12   resistor       1
+R8       22R            R-US_0207/12 0207/12   resistor       1
+R9       22R            R-US_0207/12 0207/12   resistor       1
+R10      22R            R-US_0207/12 0207/12   resistor       1
+R11      22R            R-US_0207/12 0207/12   resistor       1
+R12      22R            R-US_0207/12 0207/12   resistor       1
+R13      22R            R-US_0207/12 0207/12   resistor       1
+R14      56R            R-US_0207/10 0207/10   resistor       1
+R15      56R            R-US_0207/10 0207/10   resistor       1
+R16      56R            R-US_0207/10 0207/10   resistor       1
+R17      56R            R-US_0207/10 0207/10   resistor       1
+R18      56R            R-US_0207/10 0207/10   resistor       1
+R19      56R            R-US_0207/10 0207/10   resistor       1
+R20      56R            R-US_0207/10 0207/10   resistor       1
+T1       BC547          BC547        TO92      transistor     1
