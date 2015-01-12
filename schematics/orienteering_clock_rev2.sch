@@ -9515,7 +9515,6 @@ Io: 300 mA; Quiescent Current: 2 mA (SHDN: 20 uA)
 <part name="C_LF" library="wirepad" deviceset="1,6/0,9" device=""/>
 <part name="C_LG" library="wirepad" deviceset="1,6/0,9" device=""/>
 <part name="BUZZ1" library="buzzer" deviceset="F/BC40" device=""/>
-<part name="P+6" library="supply1" deviceset="+12V" device=""/>
 <part name="T1" library="transistor" deviceset="BC547" device=""/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="CONTROL1" library="pinhead" deviceset="PINHD-2X5" device="" value="JP_1"/>
@@ -9547,7 +9546,7 @@ Io: 300 mA; Quiescent Current: 2 mA (SHDN: 20 uA)
 <part name="C3" library="SparkFun-Capacitors" deviceset="CAP" device="PTH" value="22pF"/>
 <part name="C4" library="SparkFun-Capacitors" deviceset="CAP" device="PTH" value="22pF"/>
 <part name="GND10" library="SparkFun" deviceset="GND" device=""/>
-<part name="MOD1" library="_hhn_Pololu" deviceset="POLOLU_D24V3F*" device="-HC" technology="5"/>
+<part name="VIN_REG1" library="_hhn_Pololu" deviceset="POLOLU_D24V3F*" device="-HC" technology="5"/>
 <part name="LED_SMALL_1" library="MINE" deviceset="7-SEG_" device="SA23-12SRWA"/>
 <part name="LED_SMALL_2" library="MINE" deviceset="7-SEG_" device="SA23-12SRWA"/>
 <part name="P+2" library="supply1" deviceset="VCC" device=""/>
@@ -9582,8 +9581,9 @@ MOSFETS</text>
 <text x="162.56" y="116.84" size="5.08" layer="95">ATmega328</text>
 <text x="281.94" y="71.12" size="1.778" layer="91">TODO:
  - dot point in the middle of big displays
- - add POWER source
+ - add POWER source flow
  - measure BATTERY voltage?
+ - add buttons (connectors?)
  - add necessary connectors...</text>
 <wire x1="-45.72" y1="7.62" x2="-45.72" y2="127" width="0.1524" layer="95" style="shortdash"/>
 </plain>
@@ -9685,7 +9685,6 @@ MOSFETS</text>
 <instance part="BUZZ1" gate="G$1" x="-17.78" y="-12.7" smashed="yes">
 <attribute name="NAME" x="-20.32" y="-6.35" size="1.778" layer="95"/>
 </instance>
-<instance part="P+6" gate="1" x="-25.4" y="-10.16"/>
 <instance part="T1" gate="G$1" x="-15.24" y="-20.32" smashed="yes">
 <attribute name="NAME" x="-12.7" y="-20.32" size="1.778" layer="95"/>
 <attribute name="VALUE" x="-12.7" y="-22.86" size="1.778" layer="96"/>
@@ -9740,7 +9739,7 @@ MOSFETS</text>
 <attribute name="VALUE" x="98.171" y="68.834" size="1.778" layer="96" rot="R90"/>
 </instance>
 <instance part="GND10" gate="1" x="88.9" y="73.66"/>
-<instance part="MOD1" gate="G$1" x="248.92" y="111.76"/>
+<instance part="VIN_REG1" gate="G$1" x="248.92" y="111.76"/>
 <instance part="LED_SMALL_1" gate="G$1" x="22.86" y="2.54"/>
 <instance part="LED_SMALL_2" gate="G$1" x="22.86" y="-30.48"/>
 <instance part="P+2" gate="VCC" x="104.14" y="111.76"/>
@@ -9806,12 +9805,6 @@ MOSFETS</text>
 <junction x="99.06" y="-5.08"/>
 <wire x1="106.68" y1="-5.08" x2="106.68" y2="-2.54" width="0.1524" layer="91"/>
 <pinref part="P+3" gate="1" pin="+12V"/>
-</segment>
-<segment>
-<pinref part="BUZZ1" gate="G$1" pin="+"/>
-<wire x1="-20.32" y1="-15.24" x2="-25.4" y2="-15.24" width="0.1524" layer="91"/>
-<pinref part="P+6" gate="1" pin="+12V"/>
-<wire x1="-25.4" y1="-15.24" x2="-25.4" y2="-12.7" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="P+7" gate="1" pin="+12V"/>
@@ -9905,7 +9898,7 @@ MOSFETS</text>
 <wire x1="111.76" y1="106.68" x2="114.3" y2="106.68" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="MOD1" gate="G$1" pin="GND"/>
+<pinref part="VIN_REG1" gate="G$1" pin="GND"/>
 <wire x1="264.16" y1="104.14" x2="269.24" y2="104.14" width="0.1524" layer="91"/>
 <wire x1="269.24" y1="104.14" x2="269.24" y2="101.6" width="0.1524" layer="91"/>
 <pinref part="GND4" gate="1" pin="GND"/>
@@ -10396,6 +10389,17 @@ MOSFETS</text>
 <pinref part="J2" gate="G$1" pin="2"/>
 <pinref part="P+10" gate="VCC" pin="VCC"/>
 </segment>
+<segment>
+<pinref part="VIN_REG1" gate="G$1" pin="VOUT"/>
+<pinref part="VIN_REG1" gate="G$1" pin="SHDN"/>
+<wire x1="236.22" y1="104.14" x2="236.22" y2="93.98" width="0.1524" layer="91"/>
+<wire x1="236.22" y1="93.98" x2="274.32" y2="93.98" width="0.1524" layer="91"/>
+<wire x1="274.32" y1="93.98" x2="274.32" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="274.32" y1="116.84" x2="264.16" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="274.32" y1="116.84" x2="281.94" y2="116.84" width="0.1524" layer="91"/>
+<junction x="274.32" y="116.84"/>
+<label x="281.94" y="116.84" size="1.27" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="N$1" class="0">
 <segment>
@@ -10478,8 +10482,8 @@ MOSFETS</text>
 </segment>
 <segment>
 <pinref part="T1" gate="G$1" pin="B"/>
-<wire x1="-17.78" y1="-20.32" x2="-20.32" y2="-20.32" width="0.1524" layer="91"/>
-<label x="-20.32" y="-20.32" size="1.27" layer="95" rot="MR0" xref="yes"/>
+<wire x1="-17.78" y1="-20.32" x2="-22.86" y2="-20.32" width="0.1524" layer="91"/>
+<label x="-22.86" y="-20.32" size="1.27" layer="95" rot="MR0" xref="yes"/>
 </segment>
 </net>
 <net name="IO4" class="0">
@@ -10676,17 +10680,6 @@ MOSFETS</text>
 <wire x1="182.88" y1="157.48" x2="185.42" y2="157.48" width="0.1524" layer="91"/>
 <wire x1="182.88" y1="157.48" x2="182.88" y2="165.1" width="0.1524" layer="91"/>
 </segment>
-<segment>
-<pinref part="MOD1" gate="G$1" pin="VOUT"/>
-<pinref part="MOD1" gate="G$1" pin="SHDN"/>
-<wire x1="236.22" y1="104.14" x2="236.22" y2="93.98" width="0.1524" layer="91"/>
-<wire x1="236.22" y1="93.98" x2="274.32" y2="93.98" width="0.1524" layer="91"/>
-<wire x1="274.32" y1="93.98" x2="274.32" y2="116.84" width="0.1524" layer="91"/>
-<wire x1="274.32" y1="116.84" x2="264.16" y2="116.84" width="0.1524" layer="91"/>
-<wire x1="274.32" y1="116.84" x2="281.94" y2="116.84" width="0.1524" layer="91"/>
-<junction x="274.32" y="116.84"/>
-<label x="281.94" y="116.84" size="1.27" layer="95" xref="yes"/>
-</segment>
 </net>
 <net name="RESET" class="0">
 <segment>
@@ -10748,6 +10741,16 @@ MOSFETS</text>
 <pinref part="JP10" gate="G$1" pin="1"/>
 <pinref part="SUPPLY5" gate="G$1" pin="VIN"/>
 <wire x1="177.8" y1="149.86" x2="177.8" y2="152.4" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="VIN_REG1" gate="G$1" pin="VIN"/>
+<wire x1="236.22" y1="116.84" x2="233.68" y2="116.84" width="0.1524" layer="91"/>
+<label x="233.68" y="116.84" size="1.27" layer="95" rot="MR0" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BUZZ1" gate="G$1" pin="+"/>
+<wire x1="-20.32" y1="-15.24" x2="-22.86" y2="-15.24" width="0.1524" layer="91"/>
+<label x="-22.86" y="-15.24" size="1.27" layer="95" rot="MR0" xref="yes"/>
 </segment>
 </net>
 <net name="DTR" class="0">
