@@ -10603,19 +10603,19 @@ This is the through-hole version of this chip.</description>
 <part name="IOL" library="SparkFun-Connectors" deviceset="M09" device="LOCK"/>
 <part name="GND3" library="SparkFun" deviceset="GND" device=""/>
 <part name="C1" library="SparkFun" deviceset="CAP" device="PTH" value="100nF"/>
-<part name="R22" library="resistor" deviceset="R-US_" device="0207/10" value="10k"/>
+<part name="R22" library="resistor" deviceset="R-US_" device="0207/10" value="10K"/>
 <part name="RESET" library="SparkFun" deviceset="TAC_SWITCH" device="PTH" value="RESET"/>
 <part name="GND5" library="SparkFun" deviceset="GND" device=""/>
 <part name="GND6" library="SparkFun" deviceset="GND" device=""/>
 <part name="C2" library="SparkFun" deviceset="CAP" device="PTH" value="100nF"/>
 <part name="GND7" library="SparkFun" deviceset="GND" device=""/>
 <part name="GND8" library="SparkFun" deviceset="GND" device=""/>
-<part name="C8" library="SparkFun" deviceset="CAP" device="PTH" value="0.1uF"/>
+<part name="C5" library="SparkFun" deviceset="CAP" device="PTH" value="0.1uF"/>
 <part name="IC" library="SparkFun-DigitalIC" deviceset="ATMEGA328P_PDIP" device="" value="ATMEGA328"/>
 <part name="IOH" library="SparkFun-Connectors" deviceset="M10" device="LOCK" value="M10LOCK"/>
 <part name="J2" library="SparkFun-Connectors" deviceset="AVR_SPI_PRG_6" device="2X3_LOCK" value="ICSP"/>
 <part name="GND26" library="SparkFun" deviceset="GND" device=""/>
-<part name="Y2" library="SparkFun-FreqCtrl" deviceset="CRYSTAL" device="HC49US" value="16MHz"/>
+<part name="Y1" library="SparkFun-FreqCtrl" deviceset="CRYSTAL" device="HC49US" value="16MHz"/>
 <part name="C3" library="SparkFun-Capacitors" deviceset="CAP" device="PTH" value="22pF"/>
 <part name="C4" library="SparkFun-Capacitors" deviceset="CAP" device="PTH" value="22pF"/>
 <part name="GND10" library="SparkFun" deviceset="GND" device=""/>
@@ -10804,14 +10804,14 @@ UNUSED</text>
 <instance part="C2" gate="G$1" x="121.92" y="116.84" rot="R270"/>
 <instance part="GND7" gate="1" x="129.54" y="114.3"/>
 <instance part="GND8" gate="1" x="119.38" y="38.1"/>
-<instance part="C8" gate="G$1" x="101.6" y="111.76"/>
+<instance part="C5" gate="G$1" x="101.6" y="111.76"/>
 <instance part="IC" gate="G$1" x="144.78" y="78.74"/>
 <instance part="IOH" gate="G$1" x="190.5" y="53.34" smashed="yes" rot="MR0">
 <attribute name="NAME" x="187.96" y="44.45" size="1.778" layer="95" rot="MR90"/>
 </instance>
 <instance part="J2" gate="G$1" x="22.86" y="-30.48"/>
 <instance part="GND26" gate="1" x="177.8" y="30.48"/>
-<instance part="Y2" gate="G$1" x="116.84" y="76.2" smashed="yes" rot="R90">
+<instance part="Y1" gate="G$1" x="116.84" y="76.2" smashed="yes" rot="R90">
 <attribute name="NAME" x="117.348" y="70.358" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="120.142" y="65.532" size="1.778" layer="96" rot="R90"/>
 </instance>
@@ -11725,7 +11725,7 @@ UNUSED</text>
 <pinref part="RESET" gate="S" pin="3"/>
 <pinref part="RESET" gate="S" pin="4"/>
 <pinref part="IC" gate="G$1" pin="PC6(/RESET)"/>
-<pinref part="C8" gate="G$1" pin="2"/>
+<pinref part="C5" gate="G$1" pin="2"/>
 <wire x1="101.6" y1="109.22" x2="101.6" y2="106.68" width="0.1524" layer="91"/>
 <wire x1="104.14" y1="104.14" x2="104.14" y2="101.6" width="0.1524" layer="91"/>
 <junction x="104.14" y="104.14"/>
@@ -11776,7 +11776,7 @@ UNUSED</text>
 <net name="DTR" class="0">
 <segment>
 <wire x1="101.6" y1="116.84" x2="101.6" y2="119.38" width="0.1524" layer="91"/>
-<pinref part="C8" gate="G$1" pin="1"/>
+<pinref part="C5" gate="G$1" pin="1"/>
 <label x="101.6" y="119.38" size="1.27" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
@@ -11790,7 +11790,7 @@ UNUSED</text>
 <pinref part="IC" gate="G$1" pin="PB6(XTAL1/TOSC1)"/>
 <pinref part="C4" gate="G$1" pin="2"/>
 <wire x1="121.92" y1="78.74" x2="116.84" y2="78.74" width="0.1524" layer="91"/>
-<pinref part="Y2" gate="G$1" pin="2"/>
+<pinref part="Y1" gate="G$1" pin="2"/>
 <junction x="116.84" y="78.74"/>
 <wire x1="116.84" y1="78.74" x2="114.3" y2="78.74" width="0.1524" layer="91"/>
 </segment>
@@ -11800,7 +11800,7 @@ UNUSED</text>
 <pinref part="IC" gate="G$1" pin="PB7(XTAL2/TOSC2)"/>
 <pinref part="C3" gate="G$1" pin="2"/>
 <wire x1="121.92" y1="73.66" x2="116.84" y2="73.66" width="0.1524" layer="91"/>
-<pinref part="Y2" gate="G$1" pin="1"/>
+<pinref part="Y1" gate="G$1" pin="1"/>
 <junction x="116.84" y="73.66"/>
 <wire x1="116.84" y1="73.66" x2="114.3" y2="73.66" width="0.1524" layer="91"/>
 </segment>

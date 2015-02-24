@@ -134,6 +134,10 @@
 <dimension x1="0" y1="81.27" x2="0" y2="0" x3="-8.89" y3="40.635" textsize="1.778" layer="20" visible="yes"/>
 <wire x1="-1.27" y1="71.755" x2="102.235" y2="71.755" width="0.4064" layer="48"/>
 <dimension x1="-1.27" y1="71.755" x2="-1.27" y2="81.28" x3="-1.27" y3="76.5175" textsize="1.778" layer="20"/>
+<text x="7.874" y="9.398" size="0.8128" layer="21" font="vector">VCC</text>
+<text x="10.414" y="9.398" size="0.8128" layer="21" font="vector">GND</text>
+<text x="12.954" y="9.398" size="0.8128" layer="21" font="vector">VIN</text>
+<text x="15.494" y="9.398" size="0.8128" layer="21" font="vector">SHDN</text>
 </plain>
 <libraries>
 <library name="SparkFun">
@@ -2216,11 +2220,26 @@ design rules under a new name.</description>
 <element name="AD" library="SparkFun" package="1X06-SIP_LOCK" value="AD" x="80.01" y="33.655" smashed="yes">
 <attribute name="VALUE" x="78.74" y="30.734" size="1.27" layer="27" font="vector"/>
 </element>
-<element name="C1" library="SparkFun" package="CAP-PTH-SMALL" value="100nF" x="74.93" y="39.37" rot="R270"/>
-<element name="C2" library="SparkFun" package="CAP-PTH-SMALL" value="100nF" x="72.39" y="36.83" rot="R90"/>
-<element name="C3" library="SparkFun-Capacitors" package="CAP-PTH-SMALL" value="22pF" x="67.31" y="53.34"/>
-<element name="C4" library="SparkFun-Capacitors" package="CAP-PTH-SMALL" value="22pF" x="74.93" y="53.34" rot="R180"/>
-<element name="C8" library="SparkFun" package="CAP-PTH-SMALL" value="0.1uF" x="94.615" y="54.864" rot="R270"/>
+<element name="C1" library="SparkFun" package="CAP-PTH-SMALL" value="100nF" x="74.93" y="39.37" smashed="yes" rot="R270">
+<attribute name="NAME" x="76.2" y="37.084" size="0.4064" layer="25" rot="R270"/>
+<attribute name="VALUE" x="76.2" y="39.878" size="0.4064" layer="27" rot="R270"/>
+</element>
+<element name="C2" library="SparkFun" package="CAP-PTH-SMALL" value="100nF" x="72.39" y="36.83" smashed="yes" rot="R90">
+<attribute name="NAME" x="71.247" y="36.449" size="0.4064" layer="25" rot="R90"/>
+<attribute name="VALUE" x="71.247" y="38.608" size="0.4064" layer="27" rot="R90"/>
+</element>
+<element name="C3" library="SparkFun-Capacitors" package="CAP-PTH-SMALL" value="22pF" x="67.31" y="53.34" smashed="yes">
+<attribute name="NAME" x="68.326" y="54.229" size="0.4064" layer="25"/>
+<attribute name="VALUE" x="67.945" y="51.943" size="0.4064" layer="27"/>
+</element>
+<element name="C4" library="SparkFun-Capacitors" package="CAP-PTH-SMALL" value="22pF" x="74.93" y="53.34" smashed="yes" rot="R180">
+<attribute name="NAME" x="74.041" y="54.61" size="0.4064" layer="25" rot="R180"/>
+<attribute name="VALUE" x="74.295" y="52.324" size="0.4064" layer="27" rot="R180"/>
+</element>
+<element name="C5" library="SparkFun" package="CAP-PTH-SMALL" value="0.1uF" x="94.615" y="54.864" smashed="yes" rot="R270">
+<attribute name="NAME" x="94.107" y="51.308" size="0.4064" layer="25" rot="R270"/>
+<attribute name="VALUE" x="94.742" y="51.308" size="0.4064" layer="27" rot="R270"/>
+</element>
 <element name="IC1" library="NumericDisplay" package="DIL20" value="TPIC6B595N" x="44.45" y="57.15" rot="R270"/>
 <element name="IC2" library="NumericDisplay" package="DIL20" value="TPIC6B595N" x="44.45" y="31.75" rot="R270"/>
 <element name="IOL" library="SparkFun-Connectors" package="1X09_LOCK" value="M09LOCK" x="80.01" y="62.23" rot="R180"/>
@@ -2235,41 +2254,130 @@ design rules under a new name.</description>
 <element name="JP7" library="SparkFun-Connectors" package="FTDI_DEVICE_SIDE" value="FTDI_DEVICE" x="97.155" y="60.96" rot="R90"/>
 <element name="LED_SMALL_1" library="MINE" package="SA23-12SRWA" value="7-SEG_SA23-12SRWA" x="26.67" y="40.64" rot="MR0"/>
 <element name="LED_SMALL_2" library="MINE" package="SA23-12SRWA" value="7-SEG_SA23-12SRWA" x="74.93" y="40.64" rot="MR0"/>
-<element name="Q1" library="MINE" package="TO251AA-V" value="IRFU9024V" x="17.78" y="44.45" rot="R180"/>
-<element name="Q2" library="MINE" package="TO251AA-V" value="IRFU9024V" x="8.89" y="44.45" rot="R180"/>
-<element name="Q3" library="MINE" package="TO251AA-V" value="IRFU9024V" x="17.78" y="35.56" rot="R180"/>
-<element name="Q4" library="MINE" package="TO251AA-V" value="IRFU9024V" x="8.89" y="35.56" rot="R180"/>
-<element name="Q5" library="MINE" package="TO251AA-V" value="IRFU9024V" x="17.78" y="26.67" rot="R180"/>
-<element name="Q6" library="MINE" package="TO251AA-V" value="IRFU9024V" x="8.89" y="26.67" rot="R180"/>
-<element name="R1" library="resistor" package="0207/5V" value="22k" x="8.89" y="38.1" rot="R180"/>
-<element name="R10" library="resistor" package="0207/10" value="22R" x="11.43" y="63.5" rot="R180"/>
-<element name="R11" library="resistor" package="0207/10" value="22R" x="11.43" y="60.96" rot="R180"/>
-<element name="R12" library="resistor" package="0207/10" value="22R" x="11.43" y="58.42" rot="R180"/>
-<element name="R13" library="resistor" package="0207/10" value="22R" x="11.43" y="55.88" rot="R180"/>
-<element name="R14" library="resistor" package="0207/10" value="56R" x="24.13" y="63.5" rot="R90"/>
-<element name="R15" library="resistor" package="0207/10" value="56R" x="21.59" y="63.5" rot="R90"/>
-<element name="R16" library="resistor" package="0207/10" value="56R" x="24.13" y="17.78" rot="R270"/>
-<element name="R17" library="resistor" package="0207/10" value="56R" x="29.21" y="17.78" rot="R270"/>
-<element name="R18" library="resistor" package="0207/10" value="56R" x="31.75" y="17.78" rot="R270"/>
-<element name="R19" library="resistor" package="0207/10" value="56R" x="29.21" y="63.5" rot="R90"/>
-<element name="R2" library="resistor" package="0207/5V" value="22k" x="17.78" y="38.1" rot="R180"/>
-<element name="R20" library="resistor" package="0207/10" value="56R" x="31.75" y="63.5" rot="R90"/>
-<element name="R21" library="resistor" package="0207/10" value="560R" x="11.43" y="53.34" rot="R180"/>
-<element name="R22" library="resistor" package="0207/10" value="10k" x="92.71" y="57.15" rot="R90"/>
-<element name="R23" library="resistor" package="0207/10" value="1M" x="24.13" y="5.08" rot="R180"/>
-<element name="R24" library="resistor" package="0207/10" value="220k" x="24.13" y="2.54"/>
-<element name="R3" library="resistor" package="0207/5V" value="22k" x="8.89" y="46.99" rot="R180"/>
-<element name="R4" library="resistor" package="0207/5V" value="22k" x="17.78" y="46.99" rot="R180"/>
-<element name="R5" library="resistor" package="0207/5V" value="22k" x="8.89" y="29.21" rot="R180"/>
-<element name="R6" library="resistor" package="0207/5V" value="22k" x="17.78" y="29.21" rot="R180"/>
-<element name="R7" library="resistor" package="0207/10" value="22R" x="11.43" y="71.12" rot="R180"/>
-<element name="R8" library="resistor" package="0207/10" value="22R" x="11.43" y="68.58" rot="R180"/>
-<element name="R9" library="resistor" package="0207/10" value="22R" x="11.43" y="66.04" rot="R180"/>
+<element name="Q1" library="MINE" package="TO251AA-V" value="IRFU9024V" x="17.78" y="44.45" smashed="yes" rot="R180">
+<attribute name="NAME" x="20.955" y="42.926" size="0.8128" layer="25" rot="R180"/>
+</element>
+<element name="Q2" library="MINE" package="TO251AA-V" value="IRFU9024V" x="8.89" y="44.45" smashed="yes" rot="R180">
+<attribute name="NAME" x="12.065" y="42.926" size="0.8128" layer="25" rot="R180"/>
+</element>
+<element name="Q3" library="MINE" package="TO251AA-V" value="IRFU9024V" x="17.78" y="35.56" smashed="yes" rot="R180">
+<attribute name="NAME" x="20.955" y="34.036" size="0.8128" layer="25" rot="R180"/>
+</element>
+<element name="Q4" library="MINE" package="TO251AA-V" value="IRFU9024V" x="8.89" y="35.56" smashed="yes" rot="R180">
+<attribute name="NAME" x="12.065" y="34.036" size="0.8128" layer="25" rot="R180"/>
+</element>
+<element name="Q5" library="MINE" package="TO251AA-V" value="IRFU9024V" x="17.78" y="26.67" smashed="yes" rot="R180">
+<attribute name="NAME" x="20.955" y="25.146" size="0.8128" layer="25" rot="R180"/>
+</element>
+<element name="Q6" library="MINE" package="TO251AA-V" value="IRFU9024V" x="8.89" y="26.67" smashed="yes" rot="R180">
+<attribute name="NAME" x="12.065" y="25.146" size="0.8128" layer="25" rot="R180"/>
+</element>
+<element name="R1" library="resistor" package="0207/5V" value="22k" x="8.89" y="38.1" smashed="yes" rot="R180">
+<attribute name="NAME" x="8.382" y="39.37" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="10.287" y="39.37" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R10" library="resistor" package="0207/10" value="22R" x="11.43" y="63.5" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.922" y="63.881" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="13.9446" y="63.881" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R11" library="resistor" package="0207/10" value="22R" x="11.43" y="60.96" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.795" y="61.341" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="13.9446" y="61.341" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R12" library="resistor" package="0207/10" value="22R" x="11.43" y="58.42" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.922" y="58.801" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="13.9446" y="58.801" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R13" library="resistor" package="0207/10" value="22R" x="11.43" y="55.88" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.922" y="56.261" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="13.9446" y="56.261" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R14" library="resistor" package="0207/10" value="56R" x="24.13" y="63.5" smashed="yes" rot="R90">
+<attribute name="NAME" x="24.511" y="60.96" size="0.8128" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="24.511" y="64.0334" size="0.8128" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="R15" library="resistor" package="0207/10" value="56R" x="21.59" y="63.5" smashed="yes" rot="R90">
+<attribute name="NAME" x="21.971" y="60.833" size="0.8128" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="21.971" y="64.0334" size="0.8128" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="R16" library="resistor" package="0207/10" value="56R" x="24.13" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="23.876" y="17.272" size="0.8128" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="23.749" y="20.2946" size="0.8128" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="R17" library="resistor" package="0207/10" value="56R" x="29.21" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="28.956" y="17.399" size="0.8128" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="28.829" y="20.2946" size="0.8128" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="R18" library="resistor" package="0207/10" value="56R" x="31.75" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="31.496" y="17.272" size="0.8128" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="31.496" y="20.2946" size="0.8128" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="R19" library="resistor" package="0207/10" value="56R" x="29.21" y="63.5" smashed="yes" rot="R90">
+<attribute name="NAME" x="29.591" y="60.96" size="0.8128" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="29.591" y="64.0334" size="0.8128" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="R2" library="resistor" package="0207/5V" value="22k" x="17.78" y="38.1" smashed="yes" rot="R180">
+<attribute name="NAME" x="17.145" y="39.37" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="19.05" y="39.37" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R20" library="resistor" package="0207/10" value="56R" x="31.75" y="63.5" smashed="yes" rot="R90">
+<attribute name="NAME" x="32.131" y="60.96" size="0.8128" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="32.131" y="64.0334" size="0.8128" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="R21" library="resistor" package="0207/10" value="560R" x="11.43" y="53.34" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.922" y="53.721" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="14.3256" y="53.721" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R22" library="resistor" package="0207/10" value="10K" x="92.71" y="57.15" smashed="yes" rot="R90">
+<attribute name="NAME" x="93.091" y="54.61" size="0.8128" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="93.091" y="57.8104" size="0.8128" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="R23" library="resistor" package="0207/10" value="1M" x="24.13" y="5.08" smashed="yes" rot="R180">
+<attribute name="NAME" x="23.368" y="2.921" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="26.3906" y="5.461" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R24" library="resistor" package="0207/10" value="220k" x="24.13" y="2.54" smashed="yes">
+<attribute name="NAME" x="21.336" y="4.699" size="0.8128" layer="25" ratio="10"/>
+<attribute name="VALUE" x="24.6634" y="2.159" size="0.8128" layer="27" ratio="10"/>
+</element>
+<element name="R3" library="resistor" package="0207/5V" value="22k" x="8.89" y="46.99" smashed="yes" rot="R180">
+<attribute name="NAME" x="8.255" y="48.26" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="10.287" y="48.26" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R4" library="resistor" package="0207/5V" value="22k" x="17.78" y="46.99" smashed="yes" rot="R180">
+<attribute name="NAME" x="17.272" y="48.26" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="19.177" y="48.26" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R5" library="resistor" package="0207/5V" value="22k" x="8.89" y="29.21" smashed="yes" rot="R180">
+<attribute name="NAME" x="8.382" y="30.48" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="10.287" y="30.48" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R6" library="resistor" package="0207/5V" value="22k" x="17.78" y="29.21" smashed="yes" rot="R180">
+<attribute name="NAME" x="17.145" y="30.48" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="19.05" y="30.48" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R7" library="resistor" package="0207/10" value="22R" x="11.43" y="71.12" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.287" y="71.374" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="13.9446" y="71.374" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R8" library="resistor" package="0207/10" value="22R" x="11.43" y="68.58" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.287" y="68.961" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="13.9446" y="68.961" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="R9" library="resistor" package="0207/10" value="22R" x="11.43" y="66.04" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.287" y="66.421" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="13.9446" y="66.421" size="0.8128" layer="27" ratio="10" rot="R180"/>
+</element>
 <element name="RESET" library="SparkFun" package="TACTILE-PTH" value="RESET" x="88.138" y="67.31"/>
-<element name="T1" library="transistor" package="TO92" value="BC547" x="59.055" y="19.05" rot="R90"/>
+<element name="T1" library="transistor" package="TO92" value="BC547" x="59.055" y="19.05" smashed="yes" rot="R90">
+<attribute name="NAME" x="60.96" y="19.05" size="0.8128" layer="25" ratio="10"/>
+</element>
 <element name="IC" library="SparkFun-DigitalIC" package="DIL28-3" value="ATMEGA328" x="76.2" y="45.72" rot="R180"/>
 <element name="VIN_REG1" library="_hhn_Pololu" package="POLOLU_D24V3F_HC" value="POLOLU_D24V3F5-HC" x="12.7" y="6.35" rot="R180"/>
-<element name="Y2" library="SparkFun-FreqCtrl" package="HC49US" value="16MHz" x="71.12" y="57.15"/>
+<element name="Y1" library="SparkFun-FreqCtrl" package="HC49US" value="16MHz" x="71.12" y="57.15" smashed="yes">
+<attribute name="VALUE" x="69.215" y="55.118" size="0.8128" layer="27" ratio="10"/>
+<attribute name="NAME" x="69.85" y="57.912" size="1.27" layer="25" ratio="10"/>
+</element>
 <element name="JP2" library="SparkFun-Connectors" package="MOLEX-1X3" value="POWER_OUT" x="11.43" y="15.24" rot="R90"/>
 <element name="JP4" library="SparkFun" package="STAND-OFF" value="STAND-OFF" x="3.175" y="77.978"/>
 <element name="JP8" library="SparkFun" package="STAND-OFF" value="STAND-OFF" x="3.175" y="3.048"/>
@@ -2321,12 +2429,11 @@ design rules under a new name.</description>
 <via x="45.085" y="39.37" extent="1-16" drill="0.6096"/>
 <via x="45.085" y="49.53" extent="1-16" drill="0.6096"/>
 <via x="36.83" y="17.78" extent="1-16" drill="0.6096"/>
-<via x="31.115" y="17.78" extent="1-16" drill="0.6096"/>
+<via x="30.48" y="17.78" extent="1-16" drill="0.6096"/>
 <via x="21.59" y="19.685" extent="1-16" drill="0.6096"/>
 <via x="1.905" y="28.575" extent="1-16" drill="0.6096"/>
 <via x="1.905" y="12.7" extent="1-16" drill="0.6096"/>
-<via x="10.795" y="9.525" extent="1-16" drill="0.6096"/>
-<via x="12.065" y="3.81" extent="1-16" drill="0.6096"/>
+<via x="12.7" y="3.81" extent="1-16" drill="0.6096"/>
 <via x="37.465" y="2.54" extent="1-16" drill="0.6096"/>
 <via x="53.975" y="2.54" extent="1-16" drill="0.6096"/>
 <via x="67.31" y="2.54" extent="1-16" drill="0.6096"/>
@@ -2372,6 +2479,8 @@ design rules under a new name.</description>
 <via x="65.405" y="36.195" extent="1-16" drill="0.6096"/>
 <via x="78.105" y="36.83" extent="1-16" drill="0.6096"/>
 <via x="83.82" y="15.24" extent="1-16" drill="0.6096"/>
+<via x="51.435" y="50.8" extent="1-16" drill="0.6096"/>
+<via x="88.9" y="57.15" extent="1-16" drill="0.6096"/>
 </signal>
 <signal name="VCC" class="3">
 <contactref element="IC1" pad="2"/>
@@ -3124,7 +3233,7 @@ design rules under a new name.</description>
 <contactref element="RESET" pad="3"/>
 <contactref element="RESET" pad="4"/>
 <contactref element="IC" pad="1"/>
-<contactref element="C8" pad="2"/>
+<contactref element="C5" pad="2"/>
 <wire x1="91.3638" y1="65.1002" x2="84.9376" y2="65.1002" width="0.3048" layer="1"/>
 <wire x1="84.9376" y1="65.1002" x2="84.8868" y2="65.0494" width="0.3048" layer="1"/>
 <wire x1="91.3638" y1="65.1002" x2="91.3892" y2="65.0494" width="0.3048" layer="1"/>
@@ -3190,7 +3299,7 @@ design rules under a new name.</description>
 <wire x1="11.7348" y1="17.6022" x2="11.43" y2="17.78" width="0.8128" layer="1"/>
 </signal>
 <signal name="DTR">
-<contactref element="C8" pad="1"/>
+<contactref element="C5" pad="1"/>
 <contactref element="JP7" pad="P$1"/>
 <wire x1="96.9518" y1="54.7624" x2="94.7166" y2="54.7624" width="0.3048" layer="1"/>
 <wire x1="97.0915" y1="54.6227" x2="96.9518" y2="54.7624" width="0.3048" layer="1"/>
@@ -3200,7 +3309,7 @@ design rules under a new name.</description>
 <signal name="N$5">
 <contactref element="IC" pad="9"/>
 <contactref element="C4" pad="2"/>
-<contactref element="Y2" pad="2"/>
+<contactref element="Y1" pad="2"/>
 <wire x1="72.5043" y1="53.2257" x2="72.5043" y2="49.5935" width="0.3048" layer="1"/>
 <wire x1="72.5043" y1="49.5935" x2="72.39" y2="49.53" width="0.3048" layer="1"/>
 <wire x1="72.5043" y1="53.2257" x2="72.39" y2="53.34" width="0.3048" layer="1"/>
@@ -3212,7 +3321,7 @@ design rules under a new name.</description>
 <signal name="N$6">
 <contactref element="IC" pad="10"/>
 <contactref element="C3" pad="2"/>
-<contactref element="Y2" pad="1"/>
+<contactref element="Y1" pad="1"/>
 <wire x1="69.85" y1="53.34" x2="69.85" y2="49.53" width="0.3048" layer="1"/>
 <wire x1="68.5927" y1="54.483" x2="68.5927" y2="57.1373" width="0.3048" layer="1"/>
 <wire x1="69.7103" y1="53.3654" x2="68.5927" y2="54.483" width="0.3048" layer="1"/>
