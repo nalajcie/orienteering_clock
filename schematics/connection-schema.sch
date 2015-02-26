@@ -10481,7 +10481,7 @@ Source: SA56-11EWA(Ver1189471036.pdf</description>
 <part name="LED_BIG_3" library="MINE" deviceset="7-SEG_" device="LD-S400UHR-C" value="7-SEG_LD-S400UHR-C"/>
 <part name="LED_BIG_4" library="MINE" deviceset="7-SEG_" device="LD-S400UHR-C" value="7-SEG_LD-S400UHR-C"/>
 <part name="JP3" library="SparkFun-Connectors" deviceset="M02" device="POLAR" value="BUZZER"/>
-<part name="JP1" library="SparkFun-Connectors" deviceset="M03" device="POLAR" value="POWER"/>
+<part name="JP1" library="SparkFun-Connectors" deviceset="M03" device="JST-PTH" value="DC_IN"/>
 <part name="JP2" library="SparkFun-Connectors" deviceset="M06" device="LONGPADS" value="BUTTONS"/>
 <part name="JP4" library="SparkFun-Connectors" deviceset="M08" device="" value="LED_CATHODE"/>
 <part name="JP5" library="SparkFun-Connectors" deviceset="M04" device="PTH" value="LED_ANODE"/>
@@ -10594,23 +10594,23 @@ OTHER IDEAS:
 <net name="DISP_12V" class="0">
 <segment>
 <pinref part="TOGGLE_DISP_ON" gate="1" pin="S"/>
-<wire x1="0" y1="99.06" x2="50.8" y2="99.06" width="0.1524" layer="91"/>
-<wire x1="50.8" y1="99.06" x2="50.8" y2="45.72" width="0.1524" layer="91"/>
-<label x="50.8" y="45.72" size="1.778" layer="95" rot="R90"/>
-<pinref part="JP1" gate="G$1" pin="2"/>
+<wire x1="0" y1="99.06" x2="48.26" y2="99.06" width="0.1524" layer="91"/>
+<label x="48.26" y="45.72" size="1.778" layer="95" rot="R90"/>
+<wire x1="48.26" y1="99.06" x2="48.26" y2="45.72" width="0.1524" layer="91"/>
+<pinref part="JP1" gate="G$1" pin="3"/>
 </segment>
 </net>
 <net name="GND" class="0">
 <segment>
 <pinref part="BATTERY_12V" gate="1" pin="-"/>
 <wire x1="-2.54" y1="63.5" x2="2.54" y2="63.5" width="0.1524" layer="91"/>
-<label x="48.26" y="45.72" size="1.778" layer="95" rot="R90"/>
-<wire x1="2.54" y1="63.5" x2="48.26" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="48.26" y1="63.5" x2="48.26" y2="45.72" width="0.1524" layer="91"/>
+<label x="50.8" y="45.72" size="1.778" layer="95" rot="R90"/>
+<wire x1="2.54" y1="63.5" x2="50.8" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="2.54" y1="63.5" x2="2.54" y2="45.72" width="0.1524" layer="91"/>
 <junction x="2.54" y="63.5"/>
-<pinref part="JP1" gate="G$1" pin="3"/>
 <pinref part="JP6" gate="G$1" pin="1"/>
+<pinref part="JP1" gate="G$1" pin="2"/>
+<wire x1="50.8" y1="63.5" x2="50.8" y2="45.72" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="BTN_SET" gate="G$1" pin="2"/>
