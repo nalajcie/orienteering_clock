@@ -21,8 +21,8 @@ void setup() {
     Serial.println("reset");
 
     // DISPLAY: setup display control
-    DisplayControl.setup();
-    DisplayControl.setBrightness(5);
+    //DisplayControl.setup();
+    //DisplayControl.setBrightness(5);
 
     // setup buzzer pin
     pinMode(BUZZ_CTL, OUTPUT);
@@ -33,25 +33,30 @@ void setup() {
     //DisplayControl.updateDisplay();
 
     // enable buzzer LED if needed
-    DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
+    //DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
 
     // start with "-601 seconds" to display -10:00 at startup
     time_offset = -601000L - millis();
+
+    pinMode(9, OUTPUT);
+    pinMode(10, OUTPUT);
+    pinMode(11, OUTPUT);
+    pinMode(12, OUTPUT);
+    pinMode(13, OUTPUT);
+    digitalWrite(10, LOW);
+    shiftOut(11, 13, MSBFIRST, 0xFF);
+    shiftOut(11, 13, MSBFIRST, 0xFF);
+    //digitalWrite(10, LOW);
+    digitalWrite(10, HIGH);
+    Serial.println("SENT using digitalWrite");
+    digitalWrite(9, LOW);
 }
 
 
 void loop() {
 
-   /*
-    digitalWrite(10, LOW);
-    shiftOut(11, 13, MSBFIRST, 0xF0);
-    shiftOut(11, 13, MSBFIRST, 0x0F);
-    //digitalWrite(10, LOW);
-    digitalWrite(10, HIGH);
-    Serial.println("SENT using digitalWrite");
-    digitalWrite(9, LOW);
-    delay(1000);
 
+    /*
     digitalWrite(10, LOW);
     shiftOut(11, 13, MSBFIRST, 0xF0);
     shiftOut(11, 13, MSBFIRST, 0x02);
@@ -60,27 +65,24 @@ void loop() {
     Serial.println("SENT using digitalWrite");
     //digitalWrite(9, LOW);
     delay(1000);
-
-*/
+    */
 
     // BUTTONS: handle button presses
     update_buttons();
     // check buttons
     if (justpressed[BUTTON_SET_IDX]) {
-
+        //TODO: do something here?
     }
 
     if (pressed[BUTTON_SET_IDX]) {
         if ((pressed[BUTTON_UP_IDX] && justpressed[BUTTON_DOWN_IDX])
             || (pressed[BUTTON_DOWN_IDX] && justpressed[BUTTON_UP_IDX])) {
             // reset seconds
-            time_offset = time_offset / (60000L) * (60000L);
+            time_offset = (time_offset / (60000L)) * (60000L);
         } else if (justpressed[BUTTON_UP_IDX]) {
             time_offset += 60000L; // add one minute
         } else if (justpressed[BUTTON_DOWN_IDX]) {
-            Serial.print("DOWN: before=");
             Serial.print(time_offset);
-            Serial.print("; after=");
             time_offset -= 60000L; // substract one minute
             Serial.println(time_offset);
         }
@@ -108,7 +110,7 @@ void loop() {
     curr_secs = curr_secs / 1000;
     unsigned int curr_mins = abs(curr_secs / 60);
     unsigned int only_secs = abs(curr_secs % 60);
-    DisplayControl.setValue(curr_mins, only_secs, (curr_secs < 0));
+    //DisplayControl.setValue(curr_mins, only_secs, (curr_secs < 0));
 
     // handle buzzer
     if (buzzerActive) {
