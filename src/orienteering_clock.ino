@@ -1,22 +1,11 @@
 #include "hw.h"
 #include "display_control.h"
-
-#define BUTTON_DEBOUNCE          10 // button debouncer, how many ms to debounce, 5+ ms is usually plenty
-#define BUTTON_FIRST_REPEAT     500 // how much to wait before first auto-repeat (in ms)
-#define BUTTON_NEXT_REPEAT      100 // how much to wait before next auto-repeat  (in ms)
+#include "buttons.h"
 
 #define BUZZER_SHORT_BEEP  100 // in ms
 #define BUZZER_LONG_BEEP   350 // in ms
 
 
-// here is where we define the buttons that we'll use. button "1" is the first, button "5" is the 5th, etc
-byte buttons[] = {BUTTON_UP, BUTTON_DOWN, BUTTON_SET, BUTTON_MODE};
-// This handy macro lets us determine how big the array up above is, by checking the size
-#define NUMBUTTONS sizeof(buttons)
-// we will track if a button is just pressed, just released, or 'currently pressed'
-byte pressed[NUMBUTTONS], justpressed[NUMBUTTONS], justreleased[NUMBUTTONS];
-
-const int buzzerPin = 3;
 const int buzzerLed = 5;
 
 int buzzerState = 0;
@@ -35,15 +24,10 @@ void setup() {
     DisplayControl.setup();
     DisplayControl.setBrightness(5);
 
+    // setup buzzer pin
+    pinMode(BUZZ_CTL, OUTPUT);
 
-    //set pins to output because they are addressed in the main loop
-    pinMode(buzzerPin, OUTPUT);
-
-    // BUTTONS: Make input & enable pull-up resistors on switch pins
-    for (int i = 0; i < NUMBUTTONS; ++i) {
-        pinMode(buttons[i], INPUT);
-        digitalWrite(buttons[i], HIGH);
-    }
+    setup_buttons();
 
     //DisplayControl.setValue(10, 40, 1);
     //DisplayControl.updateDisplay();
@@ -51,75 +35,10 @@ void setup() {
     // enable buzzer LED if needed
     DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
 
-    // start with "-600 seconds"
-    //time_offset = (-600L)*1000 + millis();
-    time_offset = -600000L - millis();
+    // start with "-601 seconds" to display -10:00 at startup
+    time_offset = -601000L - millis();
 }
 
-// BUTTONS: check the buttons state (with debouncing)
-static void check_switches() {
-    static byte previousstate[NUMBUTTONS];
-    static byte currentstate[NUMBUTTONS];
-    static long next_press[NUMBUTTONS];     // when the key should be auto-repeated
-    static long lasttime;
-    byte index;
-
-    long int curr_ms = millis();
-    // TODO: will not happen?
-    if (curr_ms < lasttime) { // we wrapped around, lets just try again
-        lasttime = curr_ms;
-    }
-
-    // when we start, we clear out the "just" indicators
-    for (index = 0; index < NUMBUTTONS; ++index) {
-        justpressed[index] = 0;
-        justreleased[index] = 0;
-    }
-
-    if ((lasttime + BUTTON_DEBOUNCE) > curr_ms) {
-        // not enough time has passed to debounce
-        return;
-    }
-    // ok we have waited BUTTON_DEBOUNCE milliseconds, lets reset the timer
-    lasttime = curr_ms;
-
-    for (index = 0; index < NUMBUTTONS; ++index) { // when we start, we clear out the "just" indicators
-        currentstate[index] = digitalRead(buttons[index]);   // read the button
-
-        /*
-        Serial.print(index, DEC);
-        Serial.print(": cstate=");
-        Serial.print(currentstate[index], DEC);
-        Serial.print(", pstate=");
-        Serial.print(previousstate[index], DEC);
-        Serial.print(", press=");
-        */
-
-
-        // check for button state change
-        if (currentstate[index] == previousstate[index]) {
-            if ((pressed[index] == 0) && (currentstate[index] == LOW)) {
-                // just pressed
-                justpressed[index] = 1;
-                next_press[index] = curr_ms + BUTTON_FIRST_REPEAT;
-            }
-            else if ((pressed[index] == 1) && (currentstate[index] == HIGH)) {
-                // just released
-                justreleased[index] = 1;
-                next_press[index] = 0;
-            }
-            pressed[index] = !currentstate[index];  // remember, digital HIGH means NOT pressed
-
-            // auto-repeat keys
-            if (pressed[index] && next_press[index] < curr_ms) {
-                justpressed[index] = 1;
-                next_press[index] = curr_ms + BUTTON_NEXT_REPEAT;
-            }
-        }
-        //Serial.println(pressed[index], DEC);
-        previousstate[index] = currentstate[index];   // keep a running tally of the buttons
-    }
-}
 
 void loop() {
 
@@ -145,7 +64,7 @@ void loop() {
 */
 
     // BUTTONS: handle button presses
-    check_switches();
+    update_buttons();
     // check buttons
     if (justpressed[BUTTON_SET_IDX]) {
 
@@ -178,7 +97,7 @@ void loop() {
         buzzerActive = !buzzerActive;
         if (!buzzerActive && buzzerState) { // buzzer is now "playing" - silence it
             buzzerState = 0;
-            digitalWrite(buzzerPin, 0);
+            digitalWrite(BUZZ_CTL, 0);
         }
         DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
     }
@@ -205,12 +124,12 @@ void loop() {
                 Serial.print("BUZZ ON: ");
                 Serial.println(curr_ms);
                 buzzerState = 1;
-                digitalWrite(buzzerPin, 1);
+                digitalWrite(BUZZ_CTL, 1);
             } else if (curr_ms >= buzzerOff && buzzerState == 1) {
                 Serial.print("BUZZ OFF: ");
                 Serial.println(curr_ms);
                 buzzerState = 0;
-                digitalWrite(buzzerPin, 0);
+                digitalWrite(BUZZ_CTL, 0);
             }
         }
     }
