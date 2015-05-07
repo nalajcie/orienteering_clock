@@ -11569,13 +11569,13 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <part name="Q1" library="MINE" deviceset="IRFU9024" device="V"/>
 <part name="R1" library="resistor" deviceset="R-US_" device="0207/5V" value="22k"/>
 <part name="IC1" library="NumericDisplay" deviceset="TPIC6B595" device="N"/>
-<part name="R8" library="resistor" deviceset="R-US_" device="0207/10" value="22R"/>
-<part name="R7" library="resistor" deviceset="R-US_" device="0207/10" value="22R"/>
-<part name="R9" library="resistor" deviceset="R-US_" device="0207/10" value="22R"/>
-<part name="R10" library="resistor" deviceset="R-US_" device="0207/10" value="22R"/>
-<part name="R11" library="resistor" deviceset="R-US_" device="0207/10" value="22R"/>
-<part name="R12" library="resistor" deviceset="R-US_" device="0207/10" value="22R"/>
-<part name="R13" library="resistor" deviceset="R-US_" device="0207/10" value="22R"/>
+<part name="R8" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
+<part name="R7" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
+<part name="R9" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
+<part name="R10" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
+<part name="R11" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
+<part name="R12" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
+<part name="R13" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
 <part name="IC2" library="NumericDisplay" deviceset="TPIC6B595" device="N"/>
 <part name="P+1" library="supply1" deviceset="+12V" device="" value="DISP_12V"/>
 <part name="Q6" library="MINE" deviceset="IRFU9024" device="V"/>
@@ -11628,8 +11628,8 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <part name="JP6" library="SparkFun-Connectors" deviceset="M04" device="PTH" value="LED_ANODE"/>
 <part name="R21" library="resistor" deviceset="R-US_" device="0207/10" value="560R"/>
 <part name="JP7" library="SparkFun-Connectors" deviceset="FTDI_DEVICE" device=""/>
-<part name="R23" library="resistor" deviceset="R-US_" device="0207/10" value="1M"/>
-<part name="R24" library="resistor" deviceset="R-US_" device="0207/10" value="220k"/>
+<part name="R23" library="resistor" deviceset="R-US_" device="0207/10" value="10K"/>
+<part name="R24" library="resistor" deviceset="R-US_" device="0207/10" value="4K7"/>
 <part name="GND2" library="SparkFun" deviceset="GND" device=""/>
 <part name="JP2" library="SparkFun-Connectors" deviceset="M03" device="LOCK" value="POWER_OUT"/>
 <part name="SJ1" library="SparkFun-Passives" deviceset="JUMPER-PAD-2-NC_BY_TRACE" device="" value="SHDN_PULLUP"/>
@@ -11681,7 +11681,7 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <wire x1="-46.99" y1="-44.45" x2="83.82" y2="-44.45" width="0.1524" layer="97" style="shortdash"/>
 <text x="-43.18" y="22.86" size="1.27" layer="97">VOLTAGE DIVIDER
 for measuring VIN voltage
-takes upto 27V</text>
+takes upto 15V</text>
 <wire x1="-46.736" y1="-15.24" x2="2.54" y2="-15.24" width="0.1524" layer="97" style="shortdash"/>
 <text x="54.61" y="49.022" size="1.27" layer="97">Set IO8 to HIGH to enable BUZZER</text>
 <text x="191.008" y="62.992" size="1.6764" layer="97" font="vector">TX

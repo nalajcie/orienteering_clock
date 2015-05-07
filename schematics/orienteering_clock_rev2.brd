@@ -177,7 +177,7 @@ G
 <text x="5.334" y="9.906" size="0.8128" layer="25" font="vector">VIN</text>
 <text x="5.334" y="7.239" size="0.8128" layer="25" font="vector">B-</text>
 <text x="31.115" y="2.54" size="0.8128" layer="21">VIN VOLT METER
-MAX 27V</text>
+MAX 15V</text>
 <text x="6.985" y="20.955" size="0.6096" layer="21">VIN 7 - 27V
 VDD 10 - 20V</text>
 <text x="22.479" y="73.66" size="1.27" layer="25" font="vector" rot="R180">B</text>
@@ -2552,19 +2552,19 @@ design rules under a new name.</description>
 <attribute name="NAME" x="8.128" y="39.37" size="0.8128" layer="25" ratio="10" rot="R180"/>
 <attribute name="VALUE" x="10.287" y="39.37" size="0.8128" layer="27" ratio="10" rot="R180"/>
 </element>
-<element name="R10" library="resistor" package="0207/10" value="22R" x="11.43" y="63.5" smashed="yes" rot="R180">
+<element name="R10" library="resistor" package="0207/10" value="47R" x="11.43" y="63.5" smashed="yes" rot="R180">
 <attribute name="NAME" x="8.763" y="62.992" size="0.8128" layer="25" ratio="10" rot="R180" align="top-right"/>
 <attribute name="VALUE" x="12.0396" y="62.992" size="0.8128" layer="27" ratio="10" rot="R180" align="top-right"/>
 </element>
-<element name="R11" library="resistor" package="0207/10" value="22R" x="11.43" y="60.96" smashed="yes" rot="R180">
+<element name="R11" library="resistor" package="0207/10" value="47R" x="11.43" y="60.96" smashed="yes" rot="R180">
 <attribute name="NAME" x="8.763" y="60.452" size="0.8128" layer="25" ratio="10" rot="R180" align="top-right"/>
 <attribute name="VALUE" x="12.0396" y="60.452" size="0.8128" layer="27" ratio="10" rot="R180" align="top-right"/>
 </element>
-<element name="R12" library="resistor" package="0207/10" value="22R" x="11.43" y="58.42" smashed="yes" rot="R180">
+<element name="R12" library="resistor" package="0207/10" value="47R" x="11.43" y="58.42" smashed="yes" rot="R180">
 <attribute name="NAME" x="8.763" y="57.912" size="0.8128" layer="25" ratio="10" rot="R180" align="top-right"/>
 <attribute name="VALUE" x="12.0396" y="57.912" size="0.8128" layer="27" ratio="10" rot="R180" align="top-right"/>
 </element>
-<element name="R13" library="resistor" package="0207/10" value="22R" x="11.43" y="55.88" smashed="yes" rot="R180">
+<element name="R13" library="resistor" package="0207/10" value="47R" x="11.43" y="55.88" smashed="yes" rot="R180">
 <attribute name="NAME" x="8.763" y="55.372" size="0.8128" layer="25" ratio="10" rot="R180" align="top-right"/>
 <attribute name="VALUE" x="12.0396" y="55.372" size="0.8128" layer="27" ratio="10" rot="R180" align="top-right"/>
 </element>
@@ -2608,11 +2608,11 @@ design rules under a new name.</description>
 <attribute name="NAME" x="93.091" y="54.483" size="0.8128" layer="25" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="93.091" y="57.8104" size="0.8128" layer="27" ratio="10" rot="R90"/>
 </element>
-<element name="R23" library="resistor" package="0207/10" value="1M" x="24.13" y="5.08" smashed="yes" rot="R180">
+<element name="R23" library="resistor" package="0207/10" value="10K" x="24.13" y="5.08" smashed="yes" rot="R180">
 <attribute name="NAME" x="21.463" y="4.572" size="0.8128" layer="25" ratio="10" rot="R180" align="top-right"/>
 <attribute name="VALUE" x="24.6126" y="4.572" size="0.8128" layer="27" ratio="10" rot="R180" align="top-right"/>
 </element>
-<element name="R24" library="resistor" package="0207/10" value="220k" x="24.13" y="2.54" smashed="yes">
+<element name="R24" library="resistor" package="0207/10" value="4K7" x="24.13" y="2.54" smashed="yes">
 <attribute name="NAME" x="21.463" y="2.032" size="0.8128" layer="25" ratio="10"/>
 <attribute name="VALUE" x="24.5364" y="2.032" size="0.8128" layer="27" ratio="10"/>
 </element>
@@ -2632,15 +2632,15 @@ design rules under a new name.</description>
 <attribute name="NAME" x="17.018" y="30.48" size="0.8128" layer="25" ratio="10" rot="R180"/>
 <attribute name="VALUE" x="19.177" y="30.48" size="0.8128" layer="27" ratio="10" rot="R180"/>
 </element>
-<element name="R7" library="resistor" package="0207/10" value="22R" x="11.43" y="71.12" smashed="yes" rot="R180">
+<element name="R7" library="resistor" package="0207/10" value="47R" x="11.43" y="71.12" smashed="yes" rot="R180">
 <attribute name="NAME" x="8.763" y="70.612" size="0.8128" layer="25" ratio="10" rot="R180" align="top-right"/>
 <attribute name="VALUE" x="12.0396" y="70.612" size="0.8128" layer="27" ratio="10" rot="R180" align="top-right"/>
 </element>
-<element name="R8" library="resistor" package="0207/10" value="22R" x="11.43" y="68.58" smashed="yes" rot="R180">
+<element name="R8" library="resistor" package="0207/10" value="47R" x="11.43" y="68.58" smashed="yes" rot="R180">
 <attribute name="NAME" x="8.763" y="68.072" size="0.8128" layer="25" ratio="10" rot="R180" align="top-right"/>
 <attribute name="VALUE" x="12.0396" y="68.072" size="0.8128" layer="27" ratio="10" rot="R180" align="top-right"/>
 </element>
-<element name="R9" library="resistor" package="0207/10" value="22R" x="11.43" y="66.04" smashed="yes" rot="R180">
+<element name="R9" library="resistor" package="0207/10" value="47R" x="11.43" y="66.04" smashed="yes" rot="R180">
 <attribute name="NAME" x="8.763" y="65.532" size="0.8128" layer="25" ratio="10" rot="R180" align="top-right"/>
 <attribute name="VALUE" x="12.0396" y="65.532" size="0.8128" layer="27" ratio="10" rot="R180" align="top-right"/>
 </element>
