@@ -2,6 +2,8 @@
 #include "display_control.h"
 #include "buttons.h"
 
+#define TEST_SPI 0
+
 #define BUZZER_SHORT_BEEP  100 // in ms
 #define BUZZER_LONG_BEEP   350 // in ms
 
@@ -15,19 +17,59 @@ int buzzerActive = 1;
 // difference between "real time" and "millis()" in milliseconds
 long time_offset;
 
+// TODO: move to debug
+void test_spi()
+{
+    pinMode(9, OUTPUT);
+    pinMode(10, OUTPUT);
+    pinMode(11, OUTPUT);
+    pinMode(12, INPUT);
+    pinMode(13, OUTPUT);
+
+    DisplayControl.setupSPI();
+    digitalWrite(9, LOW);
+    //digitalWrite(10, LOW);
+    //shiftOut(11, 13, MSBFIRST, 0x0F);
+    //shiftOut(11, 13, MSBFIRST, 0xF0);
+
+    digitalWrite(10, HIGH); 
+    byte incoming0 = DisplayControl.spiTransfer(0x0F);
+    byte incoming1 = DisplayControl.spiTransfer(0xF0);
+    byte incoming2 = DisplayControl.spiTransfer(0x0F);
+    byte incoming3 = DisplayControl.spiTransfer(0xF0);
+    digitalWrite(10, LOW); 
+    digitalWrite(10, HIGH); 
+
+    Serial.print("SENT: 0x0F RECEIVED: ");
+    Serial.println(incoming0);
+    Serial.print("SENT: 0xF0 RECEIVED: ");
+    Serial.println(incoming1);
+    Serial.print("SENT: 0x0F RECEIVED: ");
+    Serial.println(incoming2);
+    Serial.print("SENT: 0xF0 RECEIVED: ");
+    Serial.println(incoming3);
+}
+
+
 void setup() {
     // DEBUG: initialize serial
     Serial.begin(9600);
     Serial.println("reset");
 
+#if TEST_SPI
+    test_spi();
+#else
     // DISPLAY: setup display control
-    //DisplayControl.setup();
-    //DisplayControl.setBrightness(5);
+    DisplayControl.setup();
+    DisplayControl.setBrightness(10);
+#endif
 
     // setup buzzer pin
     pinMode(BUZZ_CTL, OUTPUT);
 
     setup_buttons();
+    pinMode(14, INPUT);
+    pinMode(15, INPUT);
 
     //DisplayControl.setValue(10, 40, 1);
     //DisplayControl.updateDisplay();
@@ -38,35 +80,10 @@ void setup() {
     // start with "-601 seconds" to display -10:00 at startup
     time_offset = -601000L - millis();
 
-    pinMode(9, OUTPUT);
-    pinMode(10, OUTPUT);
-    pinMode(11, OUTPUT);
-    pinMode(12, OUTPUT);
-    pinMode(13, OUTPUT);
-    digitalWrite(10, LOW);
-    shiftOut(11, 13, MSBFIRST, 0xFF);
-    shiftOut(11, 13, MSBFIRST, 0xFF);
-    //digitalWrite(10, LOW);
-    digitalWrite(10, HIGH);
-    Serial.println("SENT using digitalWrite");
-    digitalWrite(9, LOW);
 }
 
-
 void loop() {
-
-
-    /*
-    digitalWrite(10, LOW);
-    shiftOut(11, 13, MSBFIRST, 0xF0);
-    shiftOut(11, 13, MSBFIRST, 0x02);
-    //digitalWrite(10, LOW);
-    digitalWrite(10, HIGH);
-    Serial.println("SENT using digitalWrite");
-    //digitalWrite(9, LOW);
-    delay(1000);
-    */
-
+   
     // BUTTONS: handle button presses
     update_buttons();
     // check buttons
@@ -125,6 +142,14 @@ void loop() {
             if (curr_ms < buzzerOff && buzzerState == 0) {
                 Serial.print("BUZZ ON: ");
                 Serial.println(curr_ms);
+                 float voltage = analogRead(0);
+                  Serial.print("ANALOG 0: ");
+                  Serial.println(voltage);
+                  voltage = analogRead(1);
+                  Serial.print("ANALOG 1: ");
+                  Serial.println(voltage);
+            
+            
                 buzzerState = 1;
                 digitalWrite(BUZZ_CTL, 1);
             } else if (curr_ms >= buzzerOff && buzzerState == 1) {

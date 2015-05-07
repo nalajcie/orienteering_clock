@@ -58,6 +58,11 @@ public:
     // updating display in interrupt
     static void updateDisplay();
 
+    // SPI setup routine
+    static void setupSPI();
+    static inline byte spiTransfer(byte data);
+
+
 private:
     // populate values to be send
     static void computeBigValues();
@@ -65,11 +70,6 @@ private:
 
     // updating display timings
     static void updateTimings();
-
-    // SPI setup routine
-    static void setupSPI();
-    static inline byte spiTransfer(byte data);
-
 
     // variables
     static byte values[LED_DISPLAYS_CNT];  // values to be send

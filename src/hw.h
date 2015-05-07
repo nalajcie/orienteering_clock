@@ -2,7 +2,7 @@
 #ifndef _HW_H
 #define _HW_H
 
-#define CURR_HW_REVISION 1
+#define CURR_HW_REVISION 2
 
 
 
@@ -16,7 +16,7 @@
 
 /* handled automatically by SPI library */
 #define DISPLAY_SPI_MOSI_PIN    11
-#define UNUSED_SPI_MISO         12
+#define UNUSED_SPI_MISO_PIN     12
 #define DISPLAY_SPI_SCK_PIN     13
 
 /* buttons - the analog 0-3 pins are also known as 14-17 */
@@ -48,7 +48,7 @@
 
 /* handled automatically by SPI library */
 #define DISPLAY_SPI_MOSI_PIN    11
-#define UNUSED_SPI_MISO         12
+#define UNUSED_SPI_MISO_PIN     12
 #define DISPLAY_SPI_SCK_PIN     13
 
 /* buttons - D3-D7 (D0-D1 - TX/RX) */

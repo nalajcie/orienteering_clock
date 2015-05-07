@@ -1,0 +1,63 @@
+Partlist exported from C:/proj/orienteering_clock/schematics/orienteering_clock_rev2.sch at 2015-04-16 19:34:28
+
+Part        Value             Device                   Package                           Description                                                          
+AD          AD                M06SIP_LOCK              1X06-SIP_LOCK                     Header 6                                                             
+C1          100nF             CAPPTH                   CAP-PTH-SMALL                     Capacitor                                                            
+C2          100nF             CAPPTH                   CAP-PTH-SMALL                     Capacitor                                                            
+C3          22pF              CAPPTH                   CAP-PTH-SMALL                     Capacitor                                                            
+C4          22pF              CAPPTH                   CAP-PTH-SMALL                     Capacitor                                                            
+C5          0.1uF             CAPPTH                   CAP-PTH-SMALL                     Capacitor                                                            
+C6          470uF             CAP_POLPTH1              CPOL-RADIAL-100UF-25V             Capacitor Polarized                                                  
+C7          470uF             CAP_POLPTH1              CPOL-RADIAL-100UF-25V             Capacitor Polarized                                                  
+C8          100nF             CAPPTH                   CAP-PTH-SMALL                     Capacitor                                                            
+C9          100nF             CAPPTH                   CAP-PTH-SMALL                     Capacitor                                                            
+IC          ATMEGA328         ATMEGA328P_PDIP          DIL28-3                           uC used in the Arduino                                               
+IC1         TPIC6B595N        TPIC6B595N               DIL20                             8-bit SHIFT REGISTER, output latch                                   
+IC2         TPIC6B595N        TPIC6B595N               DIL20                             8-bit SHIFT REGISTER, output latch                                   
+IOH         M10LOCK           M10LOCK                  1X10_LOCK                         Header 10                                                            
+IOL         M09LOCK           M09LOCK                  1X09_LOCK                         Header 9                                                             
+J2          ICSP              AVR_SPI_PRG_62X3_LOCK    2X3_LOCK                          AVR ISP 6 Pin                                                        
+JP1         DC_IN             M03POLAR                 MOLEX-1X3                         Header 3                                                             
+JP2         POWER_OUT         M03LOCK                  1X03_LOCK                         Header 3                                                             
+JP3         BUZZER            M02LOCK                  1X02_LOCK                         Standard 2-pin 0.1" header. Use with                                 
+JP5         LED_CATHODE       M08                      1X08_ROUND                        Header 8                                                             
+JP6         LED_ANODE         M04PTH                   1X04                              Header 4                                                             
+JP7         FTDI_DEVICE       FTDI_DEVICE              FTDI_DEVICE_SIDE                  Connector which mates to FTDI basic or FTDI cable.                   
+LED_SMALL_1 7-SEG_SA23-12SRWA 7-SEG_SA23-12SRWA        SA23-12SRWA                       Kingbright 14.2mm (0.56 INCH) SINGLE DIGIT NUMERIC DUISPLAY          
+LED_SMALL_2 7-SEG_SA23-12SRWA 7-SEG_SA23-12SRWA        SA23-12SRWA                       Kingbright 14.2mm (0.56 INCH) SINGLE DIGIT NUMERIC DUISPLAY          
+LM7805                        78XXS                    78XXS                             VOLTAGE REGULATOR - NO DRILL                                         
+Q1          IRFU9024V         IRFU9024V                TO251AA-V                         P-CHANNEL MOSFET                                                     
+Q2          IRFU9024V         IRFU9024V                TO251AA-V                         P-CHANNEL MOSFET                                                     
+Q3          IRFU9024V         IRFU9024V                TO251AA-V                         P-CHANNEL MOSFET                                                     
+Q4          IRFU9024V         IRFU9024V                TO251AA-V                         P-CHANNEL MOSFET                                                     
+Q5          IRFU9024V         IRFU9024V                TO251AA-V                         P-CHANNEL MOSFET                                                     
+Q6          IRFU9024V         IRFU9024V                TO251AA-V                         P-CHANNEL MOSFET                                                     
+R1          22k               R-US_0207/5V             0207/5V                           RESISTOR, American symbol                                            
+R2          22k               R-US_0207/5V             0207/5V                           RESISTOR, American symbol                                            
+R3          22k               R-US_0207/5V             0207/5V                           RESISTOR, American symbol                                            
+R4          22k               R-US_0207/5V             0207/5V                           RESISTOR, American symbol                                            
+R5          22k               R-US_0207/5V             0207/5V                           RESISTOR, American symbol                                            
+R6          22k               R-US_0207/5V             0207/5V                           RESISTOR, American symbol                                            
+R7          22R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R8          22R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R9          22R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R10         22R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R11         22R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R12         22R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R13         22R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R14         56R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R15         56R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R16         56R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R17         56R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R18         56R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R19         56R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R20         56R               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R21         560R              R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R22         10K               R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R23         1M                R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+R24         220k              R-US_0207/10             0207/10                           RESISTOR, American symbol                                            
+RESET       RESET             TAC_SWITCHPTH            TACTILE-PTH                       Momentary Switch                                                     
+SJ1         SHDN_PULLUP       JUMPER-PAD-2-NC_BY_TRACE PAD-JUMPER-2-NC_BY_TRACE_YES_SILK                                                                      
+T1          BC547             BC547                    TO92                              NPN TRANSISTOR                                                       
+VIN_REG1    POLOLU_D24V3F5    POLOLU_D24V3F5-HC        POLOLU_D24V3F_HC                  Pololu Step Down Voltage Regulators Series D24V3F_ (300 mA)0.4"x0.5" 
+Y1          16MHz             CRYSTALHC49US            HC49US                            Various standard crystals. Proven footprints.                        

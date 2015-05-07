@@ -89,6 +89,7 @@ void DisplayControlClass::setup() {
 
 void DisplayControlClass::setupSPI() {
     pinMode(DISPLAY_SPI_MOSI_PIN, OUTPUT);
+    pinMode(UNUSED_SPI_MISO_PIN, INPUT);
     pinMode(DISPLAY_SPI_SCK_PIN,  OUTPUT);
 
     // use direct port mappings to omit SPI library
