@@ -62,7 +62,9 @@ void DisplayControlClass::setup() {
     for (int i = 0; i < LED_DISPLAYS_CNT; ++i) {
         DPstate[i] = 0;
     }
-
+    // force change at first
+    currSmallValue = 0xFF;
+    currBigValue = 0xFFFF;
     setBrightness(1);//DEFAULT_BRIGHTNESS);
     setValue(DEFAULT_BIG_VALUE, DEFAULT_SMALL_VALUE, 1);
     displayState = DISPLAY_OFF;
@@ -192,17 +194,26 @@ void DisplayControlClass::computeBigValues() {
 }
 
 void DisplayControlClass::computeSmallValues() {
-    int index = LED_DISPLAYS_BIG_CNT + LED_DISPLAYS_SMALL_CNT - 1;
     int value = currSmallValue;
     int currDigit;
-
+#ifndef BUG_INVERTED_SMALL_DISPLAYS
+  int index = LED_DISPLAYS_BIG_CNT + LED_DISPLAYS_SMALL_CNT - 1;
+#else
+  int index = LED_DISPLAYS_BIG_CNT;
+#endif
     // always display leading '0's
     do {
         currDigit = value % 10;
         value = value / 10;
         values[index] = digit_values[currDigit] | DPstate[index];
+#ifndef BUG_INVERTED_SMALL_DISPLAYS
         index -= 1;
     } while (index >= LED_DISPLAYS_BIG_CNT);
+#else
+        index += 1;
+    } while (index < LED_DISPLAYS_BIG_CNT + LED_DISPLAYS_SMALL_CNT);
+
+#endif
 }
 
 // connect updateDisplay to timer(2) interrupt

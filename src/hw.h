@@ -37,6 +37,7 @@
 /* features */
 #define HAS_BUTTON_BATT         // additional button
 #define HAS_VIN_SENSE           // ability to sense VIN voltage
+#define BUG_INVERTED_SMALL_DISPLAYS  // S1 <->S2 mixed up :(
 
 #define DISPLAY_G_PIN            9 /* for quickly holding every output of high-side driver LOW */
 #define DISPLAY_LATCH_PIN       10 /* also SPI SS port */

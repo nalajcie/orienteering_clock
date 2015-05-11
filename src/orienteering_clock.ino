@@ -70,6 +70,8 @@ void setup() {
     setup_buttons();
     pinMode(14, INPUT);
     pinMode(15, INPUT);
+    DisplayControl.setDP(1, 1);
+
 
     //DisplayControl.setValue(10, 40, 1);
     //DisplayControl.updateDisplay();
@@ -78,7 +80,7 @@ void setup() {
     //DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
 
     // start with "-601 seconds" to display -10:00 at startup
-    time_offset = -601000L - millis();
+    time_offset = -600999L - millis();
 
 }
 
@@ -127,7 +129,7 @@ void loop() {
     curr_secs = curr_secs / 1000;
     unsigned int curr_mins = abs(curr_secs / 60);
     unsigned int only_secs = abs(curr_secs % 60);
-    //DisplayControl.setValue(curr_mins, only_secs, (curr_secs < 0));
+    DisplayControl.setValue(curr_mins, only_secs, (curr_secs < 0));
 
     // handle buzzer
     if (buzzerActive) {
