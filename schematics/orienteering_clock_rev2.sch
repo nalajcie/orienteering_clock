@@ -11541,7 +11541,7 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 </library>
 </libraries>
 <attributes>
-<attribute name="REVISION" value="v2.0"/>
+<attribute name="REVISION" value="v2.1"/>
 </attributes>
 <variantdefs>
 </variantdefs>
@@ -11626,7 +11626,7 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <part name="JP1" library="SparkFun-Connectors" deviceset="M03" device="POLAR" value="DC_IN"/>
 <part name="JP5" library="SparkFun-Connectors" deviceset="M08" device="" value="LED_CATHODE"/>
 <part name="JP6" library="SparkFun-Connectors" deviceset="M04" device="PTH" value="LED_ANODE"/>
-<part name="R21" library="resistor" deviceset="R-US_" device="0207/10" value="560R"/>
+<part name="R21" library="resistor" deviceset="R-US_" device="0207/10" value="220R"/>
 <part name="JP7" library="SparkFun-Connectors" deviceset="FTDI_DEVICE" device=""/>
 <part name="R23" library="resistor" deviceset="R-US_" device="0207/10" value="10K"/>
 <part name="R24" library="resistor" deviceset="R-US_" device="0207/10" value="4K7"/>
@@ -12294,11 +12294,6 @@ UNUSED</text>
 </net>
 <net name="S_1" class="0">
 <segment>
-<pinref part="IC2" gate="A" pin="D5"/>
-<wire x1="12.7" y1="104.14" x2="15.24" y2="104.14" width="0.1524" layer="91"/>
-<label x="15.24" y="104.14" size="1.27" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="Q5" gate="G$1" pin="G"/>
 <wire x1="116.84" y1="-5.08" x2="114.3" y2="-5.08" width="0.1524" layer="91"/>
 <pinref part="R6" gate="G$1" pin="1"/>
@@ -12307,13 +12302,13 @@ UNUSED</text>
 <junction x="114.3" y="-5.08"/>
 <label x="114.3" y="-15.24" size="1.27" layer="95" rot="R270" xref="yes"/>
 </segment>
-</net>
-<net name="S_2" class="0">
 <segment>
 <pinref part="IC2" gate="A" pin="D4"/>
 <wire x1="12.7" y1="106.68" x2="15.24" y2="106.68" width="0.1524" layer="91"/>
 <label x="15.24" y="106.68" size="1.27" layer="95" xref="yes"/>
 </segment>
+</net>
+<net name="S_2" class="0">
 <segment>
 <pinref part="Q6" gate="G$1" pin="G"/>
 <wire x1="132.08" y1="-5.08" x2="129.54" y2="-5.08" width="0.1524" layer="91"/>
@@ -12322,6 +12317,11 @@ UNUSED</text>
 <wire x1="129.54" y1="-5.08" x2="129.54" y2="-15.24" width="0.1524" layer="91"/>
 <junction x="129.54" y="-5.08"/>
 <label x="129.54" y="-15.24" size="1.27" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<pinref part="IC2" gate="A" pin="D5"/>
+<wire x1="12.7" y1="104.14" x2="15.24" y2="104.14" width="0.1524" layer="91"/>
+<label x="15.24" y="104.14" size="1.27" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="D0" class="0">
