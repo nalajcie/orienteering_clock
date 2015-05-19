@@ -32,13 +32,13 @@ void test_spi()
     //shiftOut(11, 13, MSBFIRST, 0x0F);
     //shiftOut(11, 13, MSBFIRST, 0xF0);
 
-    digitalWrite(10, HIGH); 
+    digitalWrite(10, HIGH);
     byte incoming0 = DisplayControl.spiTransfer(0x0F);
     byte incoming1 = DisplayControl.spiTransfer(0xF0);
     byte incoming2 = DisplayControl.spiTransfer(0x0F);
     byte incoming3 = DisplayControl.spiTransfer(0xF0);
-    digitalWrite(10, LOW); 
-    digitalWrite(10, HIGH); 
+    digitalWrite(10, LOW);
+    digitalWrite(10, HIGH);
 
     Serial.print("SENT: 0x0F RECEIVED: ");
     Serial.println(incoming0);
@@ -85,7 +85,7 @@ void setup() {
 }
 
 void loop() {
-   
+
     // BUTTONS: handle button presses
     update_buttons();
     // check buttons
@@ -150,8 +150,8 @@ void loop() {
                   voltage = analogRead(1);
                   Serial.print("ANALOG 1: ");
                   Serial.println(voltage);
-            
-            
+
+
                 buzzerState = 1;
                 digitalWrite(BUZZ_CTL, 1);
             } else if (curr_ms >= buzzerOff && buzzerState == 1) {
