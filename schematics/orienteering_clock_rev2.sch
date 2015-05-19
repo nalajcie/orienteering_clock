@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.1.0">
+<eagle version="7.3.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -11544,6 +11544,9 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <attribute name="REVISION" value="v2.1"/>
 </attributes>
 <variantdefs>
+<variantdef name="power-LM7805"/>
+<variantdef name="power-POLOLU"/>
+<variantdef name="SA40-19SRWA" current="yes"/>
 </variantdefs>
 <classes>
 <class number="0" name="default" width="0.3048" drill="0.3048">
@@ -11569,13 +11572,27 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <part name="Q1" library="MINE" deviceset="IRFU9024" device="V"/>
 <part name="R1" library="resistor" deviceset="R-US_" device="0207/5V" value="22k"/>
 <part name="IC1" library="NumericDisplay" deviceset="TPIC6B595" device="N"/>
-<part name="R8" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
-<part name="R7" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
-<part name="R9" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
-<part name="R10" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
-<part name="R11" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
-<part name="R12" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
-<part name="R13" library="resistor" deviceset="R-US_" device="0207/10" value="47R"/>
+<part name="R8" library="resistor" deviceset="R-US_" device="0207/10" value="47R">
+<variant name="SA40-19SRWA" value="22R/1W"/>
+</part>
+<part name="R7" library="resistor" deviceset="R-US_" device="0207/10" value="47R">
+<variant name="SA40-19SRWA" value="22R/1W"/>
+</part>
+<part name="R9" library="resistor" deviceset="R-US_" device="0207/10" value="47R">
+<variant name="SA40-19SRWA" value="22R/1W"/>
+</part>
+<part name="R10" library="resistor" deviceset="R-US_" device="0207/10" value="47R">
+<variant name="SA40-19SRWA" value="22R/1W"/>
+</part>
+<part name="R11" library="resistor" deviceset="R-US_" device="0207/10" value="47R">
+<variant name="SA40-19SRWA" value="22R/1W"/>
+</part>
+<part name="R12" library="resistor" deviceset="R-US_" device="0207/10" value="47R">
+<variant name="SA40-19SRWA" value="22R/1W"/>
+</part>
+<part name="R13" library="resistor" deviceset="R-US_" device="0207/10" value="47R">
+<variant name="SA40-19SRWA" value="22R/1W"/>
+</part>
 <part name="IC2" library="NumericDisplay" deviceset="TPIC6B595" device="N"/>
 <part name="P+1" library="supply1" deviceset="+12V" device="" value="DISP_12V"/>
 <part name="Q6" library="MINE" deviceset="IRFU9024" device="V"/>
@@ -11615,7 +11632,9 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <part name="C3" library="SparkFun-Capacitors" deviceset="CAP" device="PTH" value="22pF"/>
 <part name="C4" library="SparkFun-Capacitors" deviceset="CAP" device="PTH" value="22pF"/>
 <part name="GND10" library="SparkFun" deviceset="GND" device=""/>
-<part name="VIN_REG1" library="_hhn_Pololu" deviceset="POLOLU_D24V3F*" device="-HC" technology="5" value="POLOLU_D24V3F5"/>
+<part name="VIN_REG1" library="_hhn_Pololu" deviceset="POLOLU_D24V3F*" device="-HC" technology="5" value="POLOLU_D24V3F5">
+<variant name="power-LM7805" populate="no"/>
+</part>
 <part name="LED_SMALL_1" library="MINE" deviceset="7-SEG_" device="SA23-12SRWA"/>
 <part name="LED_SMALL_2" library="MINE" deviceset="7-SEG_" device="SA23-12SRWA"/>
 <part name="P+2" library="supply1" deviceset="VCC" device=""/>
@@ -11632,12 +11651,29 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <part name="R24" library="resistor" deviceset="R-US_" device="0207/10" value="4K7"/>
 <part name="GND2" library="SparkFun" deviceset="GND" device=""/>
 <part name="JP2" library="SparkFun-Connectors" deviceset="M03" device="LOCK" value="POWER_OUT"/>
-<part name="SJ1" library="SparkFun-Passives" deviceset="JUMPER-PAD-2-NC_BY_TRACE" device="" value="SHDN_PULLUP"/>
-<part name="LM7805" library="MINE" deviceset="78XXS" device=""/>
-<part name="C6" library="SparkFun-Passives" deviceset="CAP_POL" device="PTH1" value="470uF"/>
-<part name="C7" library="SparkFun-Passives" deviceset="CAP_POL" device="PTH1" value="470uF"/>
-<part name="C8" library="SparkFun-Passives" deviceset="CAP" device="PTH" value="100nF"/>
-<part name="C9" library="SparkFun-Passives" deviceset="CAP" device="PTH" value="100nF"/>
+<part name="SJ1" library="SparkFun-Passives" deviceset="JUMPER-PAD-2-NC_BY_TRACE" device="" value="SHDN_PULLUP">
+<variant name="power-LM7805" populate="no"/>
+</part>
+<part name="LM7805" library="MINE" deviceset="78XXS" device="">
+<variant name="power-POLOLU" populate="no"/>
+<variant name="SA40-19SRWA" populate="no"/>
+</part>
+<part name="C6" library="SparkFun-Passives" deviceset="CAP_POL" device="PTH1" value="470uF">
+<variant name="power-POLOLU" populate="no"/>
+<variant name="SA40-19SRWA" populate="no"/>
+</part>
+<part name="C7" library="SparkFun-Passives" deviceset="CAP_POL" device="PTH1" value="470uF">
+<variant name="power-POLOLU" populate="no"/>
+<variant name="SA40-19SRWA" populate="no"/>
+</part>
+<part name="C8" library="SparkFun-Passives" deviceset="CAP" device="PTH" value="100nF">
+<variant name="power-POLOLU" populate="no"/>
+<variant name="SA40-19SRWA" populate="no"/>
+</part>
+<part name="C9" library="SparkFun-Passives" deviceset="CAP" device="PTH" value="100nF">
+<variant name="power-POLOLU" populate="no"/>
+<variant name="SA40-19SRWA" populate="no"/>
+</part>
 <part name="GND11" library="SparkFun" deviceset="GND" device=""/>
 <part name="GND12" library="SparkFun" deviceset="GND" device=""/>
 <part name="GND13" library="SparkFun" deviceset="GND" device=""/>
