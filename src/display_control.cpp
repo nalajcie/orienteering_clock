@@ -24,6 +24,12 @@ uint8_t displayDigit;
 uint8_t timerCounter;
 uint8_t timerCounterOnEnd;
 
+// support overriding default output with other text
+static const uint8_t* override_big;
+static uint8_t override_small[2];
+
+uint16_t override_times;
+
 
 // values for each of the digit
 static const uint8_t digit_values[] = {
@@ -38,6 +44,9 @@ static const uint8_t digit_values[] = {
     0x7F, // 8 -> 1111 1110 MSB = 0111 1111 LSB
     0x6F, // 9 -> 1111 0110 MSB = 0110 1111 LSB
 };
+
+static const uint8_t word_BUZZ[] = {0x7F, 0x3E, 0x5B, 0x5B};
+static const uint8_t word_BATT[] = {0x7F, 0x77, 0x31, 0x31};
 
 #define VALUE_MINUS (0x40) // - -> 0100 0000
 
@@ -111,9 +120,20 @@ static void updateDisplay() {
     if (timerCounter == 0) { // switch to next digit and turn it on.
         displayDigit = (displayDigit + 1) % LED_DISPLAYS_CNT;
 
-        // display next digit
-        spiTransfer(values[displayDigit]);  // segments to display current digits (low-side driver)
-        spiTransfer(1 << displayDigit);     // digit numer (high-side driver)
+        if (override_times == 0) {
+            // display next digit
+            spiTransfer(values[displayDigit]);  // segments to display current digits (low-side driver)
+            spiTransfer(1 << displayDigit);     // digit numer (high-side driver)
+        } else {
+            // segments to display current digits (low-side driver)
+            if (displayDigit < LED_DISPLAYS_BIG_CNT) {
+                spiTransfer(override_big[displayDigit]);
+            } else {
+                spiTransfer(override_small[displayDigit-LED_DISPLAYS_BIG_CNT]);
+            }
+            spiTransfer(1 << displayDigit);     // digit numer (high-side driver)
+            override_times -= 1;
+        }
 
         // move data from shift-registers to output-registers
         bitClear(PORTB, LATCH_PIN_PORTB);
@@ -212,6 +232,7 @@ void display_setup() {
     // init values
     memset(DPstate, 0, sizeof(DPstate));
     memset(values, 0, sizeof(values));
+    override_times = 0;
     display_setBrightness(DEFAULT_BRIGHTNESS);
     displayDigit = LED_DISPLAYS_CNT - 1;
 
@@ -270,6 +291,32 @@ void display_setDP(uint8_t ledSegment, uint8_t value) {
     } else {
         computeSmallValues();
     }
+}
+
+void display_showBuzzState(int buzzState) {
+    override_big = word_BUZZ;
+#ifndef BUG_INVERTED_SMALL_DISPLAYS
+    override_small[0] = 0;
+    override_small[1] = digit_values[buzzState];
+#else
+    override_small[0] = digit_values[buzzState];
+    override_small[1] = 0;
+#endif
+
+    override_times = REFRESH_RATE * LED_DISPLAYS_CNT; // about 1s
+}
+
+void display_showBattState(int percent) {
+    override_big = word_BATT;
+#ifndef BUG_INVERTED_SMALL_DISPLAYS
+    override_small[0] = digit_values[percent / 10];
+    override_small[1] = digit_values[percent % 10];
+#else
+    override_small[0] = digit_values[percent % 10];
+    override_small[1] = digit_values[percent / 10];
+#endif
+
+    override_times = REFRESH_RATE * LED_DISPLAYS_CNT; // about 1s
 }
 
 // connect updateDisplay to timer(2) interrupt

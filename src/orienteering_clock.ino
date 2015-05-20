@@ -8,8 +8,6 @@
 #define BUZZER_LONG_BEEP   350 // in ms
 
 
-const int buzzerLed = 5;
-
 int buzzerState = 0;
 int buzzerActive = 1;
 
@@ -34,10 +32,6 @@ void setup() {
 
     buttons_setup();
     pinMode(14, INPUT);
-
-
-    // enable buzzer LED if needed
-    //DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
 
     // start with "-601 seconds" to display -10:00 at startup
     time_offset = -600999L - millis();
@@ -80,7 +74,7 @@ void loop() {
             buzzerState = 0;
             digitalWrite(BUZZ_CTL, 0);
         }
-        //DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
+        display_showBuzzState(buzzerActive);
     }
 
     /// update time

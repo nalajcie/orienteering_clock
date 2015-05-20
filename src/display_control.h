@@ -60,6 +60,9 @@ void display_setup();
 // set value to be displayed. Supports only integer values. Flag to show '-' in big display.
 void display_setValue(unsigned int bigValue, unsigned int smallValue, uint8_t showMinus);
 
+void display_showBuzzState(int buzzState);
+void display_showBattState(int percent);
+
 void display_setBrightness(uint8_t brightness); // set brightness level. valid values: MIN-MAX_BRIGHTNESS
 void display_incBrightness(); // decrease brightness level till MIN_BRIGHTNESS
 void display_decBrightness(); // increase brightness level till MAX_BRIGHTNESS
