@@ -1,6 +1,7 @@
 schematics/*.s#?
 schematics/*.b#?
 schematics/*.l#?
-
 schematics/eagle.epf
 *.epf
+
+src/build-*
