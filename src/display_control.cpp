@@ -8,26 +8,25 @@
  * Some code based on SevenSeg library by Sigvald Marholm (http://playground.arduino.cc/Main/SevenSeg)
  */
 
-#define DEBUG_DISPLAY
 // declaration of static class and it's variables
 DisplayControlClass DisplayControl;
 
-byte DisplayControlClass::values[LED_DISPLAYS_CNT];  // values to be send
-byte DisplayControlClass::DPstate[LED_DISPLAYS_CNT]; // dot-point state
+uint8_t DisplayControlClass::values[LED_DISPLAYS_CNT];  // values to be send
+uint8_t DisplayControlClass::DPstate[LED_DISPLAYS_CNT]; // dot-point state
 
 unsigned int DisplayControlClass::currBigValue;
 unsigned int DisplayControlClass::currSmallValue;
 
-byte DisplayControlClass::currShowMinus;
-byte DisplayControlClass::currBrightness;
+uint8_t DisplayControlClass::currShowMinus;
+uint8_t DisplayControlClass::currBrightness;
 
-// display-connected variables
-DisplayState DisplayControlClass::displayState;
-byte DisplayControlClass::displayDigit;
-long int DisplayControlClass::timerCounter;
-long int DisplayControlClass::timerCounterOnEnd;
+// display-related variables
+uint8_t DisplayControlClass::displayDigit;
+uint8_t DisplayControlClass::timerCounter;
+uint8_t DisplayControlClass::timerCounterOnEnd;
 
-static const byte digit_values[] = {
+
+static const uint8_t digit_values[] = {
     0x3F, // 0 -> 1111 1100 MSB = 0011 1111 LSB
     0x06, // 1 -> 0110 0000 MSB = 0000 0110 LSB
     0x5B, // 2 -> 1101 1010 MSB = 0101 1011 LSB
@@ -49,6 +48,8 @@ static const byte digit_values[] = {
 void DisplayControlClass::setup() {
 #ifdef DEBUG_DISPLAY
     Serial.println("DC::setup");
+    Serial.print("REFRESH_RATE=");
+    Serial.println(REFRESH_RATE);
 #endif
 
     // setup pins
@@ -58,15 +59,14 @@ void DisplayControlClass::setup() {
     setupSPI();
 
     // init values
-    for (int i = 0; i < LED_DISPLAYS_CNT; ++i) {
-        DPstate[i] = 0;
-    }
+    memset(DPstate, 0, sizeof(DPstate));
+    memset(values, 0, sizeof(values));
+
     // force change at first
     currSmallValue = 0xFF;
     currBigValue = 0xFFFF;
-    setBrightness(1);//DEFAULT_BRIGHTNESS);
+    setBrightness(DEFAULT_BRIGHTNESS);
     setValue(DEFAULT_BIG_VALUE, DEFAULT_SMALL_VALUE, 1);
-    displayState = DISPLAY_OFF;
     displayDigit = LED_DISPLAYS_CNT - 1;
 
     // setup timer (2) interrupt
@@ -77,7 +77,7 @@ void DisplayControlClass::setup() {
     TCCR1A = 0;
     TCCR1B = 0;
     TCNT1  = 0;                             // Initialize counter value to 0
-    OCR1A = 3;                              // Set compare Match Register to 3
+    OCR1A = TIMER_COMPARER;                 // Set compare Match Register to 3
     TCCR1B |= (1 << WGM12);                 // Turn on CTC mode
     TCCR1B |= (1 << CS11) | (1 << CS10);    // Set prescaler to 64
     TIMSK1 |= (1 << OCIE1A);                // Enable timer compare interrupt
@@ -94,7 +94,7 @@ void DisplayControlClass::setupSPI() {
     pinMode(DISPLAY_SPI_SCK_PIN,  OUTPUT);
 
     // use direct port mappings to omit SPI library
-    byte clr;
+    uint8_t clr;
     SPCR |= ((1<<SPE) | (1<<MSTR));   // enable SPI as master
     SPCR &= ~((1<<SPR1) | (1<<SPR0)); // clear prescaler bits
     clr = SPSR;         // clear SPI status reg
@@ -105,10 +105,7 @@ void DisplayControlClass::setupSPI() {
 }
 
 void DisplayControlClass::updateTimings() {
-    // Artefacts in duty cycle control appeared when these values changed while interrupts happening (A kind of stepping in brightness appeared)
-    //cli();
-    timerCounterOnEnd = ((long) ONE_DIGIT_TICKS) * currBrightness / MAX_BRIGHTNESS;
-    //sei();
+    timerCounterOnEnd = BRIGHTNESS_STEP_TICKS * currBrightness;
 
 #ifdef DEBUG_DISPLAY
     Serial.print("TIMINGS: timerCounterOnEnd = ");
@@ -121,21 +118,14 @@ void DisplayControlClass::updateTimings() {
 // timed interrupt
 void DisplayControlClass::updateDisplay() {
 
-    if ((displayState == DISPLAY_ON) && (timerCounter >= timerCounterOnEnd)) {
-        // Finished with on-part. Turn off digit, and switch to the off-phase
-        // setting G pin high will quickly disable the outputs
-        bitSet(PORTB, G_PIN_PORTB);
-        displayState = DISPLAY_OFF;
-    } else if ((displayState == DISPLAY_OFF) && (timerCounter >= ONE_DIGIT_TICKS)) {
-        // Finished with the off-part. Switch to next digit and turn it on.
-        timerCounter = 0;
-        displayState = DISPLAY_ON;
+    if (timerCounter == 0) { // switch to next digit and turn it on.
         displayDigit = (displayDigit + 1) % LED_DISPLAYS_CNT;
 
         // display next digit
         spiTransfer(values[displayDigit]);  // segments to display current digits (low-side driver)
         spiTransfer(1 << displayDigit);     // digit numer (high-side driver)
 
+        // move data from shift-registers to output-registers
         bitClear(PORTB, LATCH_PIN_PORTB);
         bitSet(PORTB, LATCH_PIN_PORTB);
 
@@ -143,8 +133,14 @@ void DisplayControlClass::updateDisplay() {
         bitClear(PORTB, G_PIN_PORTB);
     }
 
-    // Increment the library's counter
-    ++timerCounter;
+    if (timerCounter == timerCounterOnEnd) {
+        // Finished with on-part. Turn off digit, and switch to the off-phase
+        // setting G pin high will quickly disable the outputs
+        bitSet(PORTB, G_PIN_PORTB);
+    }
+
+    // increment the library's counter
+    timerCounter = (timerCounter + 1) % ONE_DIGIT_TICKS;
 }
 
 // TODO: display leading '0's in hour mode

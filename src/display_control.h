@@ -14,61 +14,67 @@
 #include <Arduino.h>
 
 // enable for debugging
-//#define DEBUG_DISPLAY
+#define DEBUG_DISPLAY
 
 // configuration
-#define LED_DISPLAYS_BIG_CNT  4
+#define LED_DISPLAYS_BIG_CNT    4
 #define LED_DISPLAYS_SMALL_CNT  2
-#define LED_DISPLAYS_CNT  (LED_DISPLAYS_BIG_CNT + LED_DISPLAYS_SMALL_CNT)
+#define LED_DISPLAYS_CNT        (LED_DISPLAYS_BIG_CNT + LED_DISPLAYS_SMALL_CNT)
 
-#define MIN_BRIGHTNESS 2
-#define MAX_BRIGHTNESS 10
+#define MIN_BRIGHTNESS          2
+#define MAX_BRIGHTNESS          10
 
-#define DEFAULT_BIG_VALUE   10
-#define DEFAULT_SMALL_VALUE 0
-#define DEFAULT_BRIGHTNESS  7
+#define DEFAULT_BIG_VALUE       10
+#define DEFAULT_SMALL_VALUE     0
+#define DEFAULT_BRIGHTNESS      7
 
 //TODO: tidy it here
-#define DESIRED_REFRESH_RATE (625/9) // about 70 Hz, so 70/6 per digit, ONE_DIGIT_TICKS == 200
+#define ONE_DIGIT_US    2400
 //1000000/69.444444444444444/6/12 == 200 TICKs/digit
 
 // do not change these:
-// TODO: showud we increase TIMER_DIVISOR to be call the update at a lower frequency?
-#define CLOCK_HZ 16000000
-#define TIMER_DIVISOR (64*3)
-#define ONE_TICK_US (1000000L / (CLOCK_HZ / TIMER_DIVISOR)) // exactly 12us
-
-#define ONE_CYCLE_US (1000000L / DESIRED_REFRESH_RATE)
-#define ONE_DIGIT_US (ONE_CYCLE_US / LED_DISPLAYS_CNT)  // for 50Hz: 3333.3333
-
-#define ONE_DIGIT_TICKS  (ONE_DIGIT_US / ONE_TICK_US)
+// TODO: should we increase TIMER_DIVISOR to be call the update at a lower frequency?
+#define CLOCK_HZ        16000000
+#define TIMER_PRESCALER (64)
+#define TIMER_COMPARER  (30)
+#define TIMER_DIVISOR   (TIMER_PRESCALER * TIMER_COMPARER)
+#define ONE_TICK_US     (1000000L / (CLOCK_HZ / TIMER_DIVISOR)) // exactly 120us
 
 
-enum DisplayState {
-    DISPLAY_ON,
-    DISPLAY_OFF,
-};
+#define ONE_DIGIT_TICKS (ONE_DIGIT_US / ONE_TICK_US)                // 20 ticks
+#define BRIGHTNESS_STEP_TICKS (ONE_DIGIT_TICKS / MAX_BRIGHTNESS)    // 2 ticks
+
+// compute refresh rate
+#define REFRESH_RATE (1000000L / (ONE_DIGIT_US * LED_DISPLAYS_CNT)) // about 70 Hz, so 70/6 per digit
+
+
+// check if storage class for timerCounter is OK - will not get higher than ONE_DIGIT_TICKS + 1
+#if ONE_DIGIT_TICKS > 254
+#warning "ONE_DIGIT_TICKS too large, increase storage class for timerCounter"
+#endif
+
+//BIG TODO: change to PURE C, to enable static linkage (!!!)
 
 class DisplayControlClass {
 public:
     // setup SPI and timer interrupts - call at start
     static void setup();
     // set value to be displayed. Supports only integer values. Flag to show '-' in big display.
-    static inline void setValue(unsigned int bigValue, unsigned int smallValue, byte showMinus);
+    static inline void setValue(unsigned int bigValue, unsigned int smallValue, uint8_t showMinus);
 
-    static inline void setBrightness(byte brightness); // set brightness level. valid values: MIN-MAX_BRIGHTNESS
+    static inline void setBrightness(uint8_t brightness); // set brightness level. valid values: MIN-MAX_BRIGHTNESS
     static inline void incBrightness(); // decrease brightness level till MIN_BRIGHTNESS
     static inline void decBrightness(); // increase brightness level till MAX_BRIGHTNESS
 
     // enable/disable dot point at given LED segment
-    static inline void setDP(byte ledSegment, byte value);
+    static inline void setDP(uint8_t ledSegment, uint8_t value);
 
     // updating display in interrupt
     static void updateDisplay();
 
     // SPI setup routine
     static void setupSPI();
-    static inline byte spiTransfer(byte data);
+    static inline uint8_t spiTransfer(uint8_t data);
 
 
 private:
@@ -80,25 +86,24 @@ private:
     static void updateTimings();
 
     // variables
-    static byte values[LED_DISPLAYS_CNT];  // values to be send
-    static byte DPstate[LED_DISPLAYS_CNT]; // dot-point state
+    static uint8_t values[LED_DISPLAYS_CNT];  // values to be send
+    static uint8_t DPstate[LED_DISPLAYS_CNT]; // dot-point state
 
     static unsigned int currBigValue;
     static unsigned int currSmallValue;
 
-    static byte currShowMinus;
-    static byte currBrightness;
+    static uint8_t currShowMinus;
+    static uint8_t currBrightness;
 
     // display-connected variables
-    static DisplayState displayState;
-    static byte displayDigit;
-    static long int timerCounter;
-    static long int timerCounterOnEnd;
+    static uint8_t displayDigit;
+    static uint8_t timerCounter;
+    static uint8_t timerCounterOnEnd;
 };
 
 extern DisplayControlClass DisplayControl;
 
-inline void DisplayControlClass::setValue(unsigned int bigValue, unsigned int smallValue, byte showMinus) {
+inline void DisplayControlClass::setValue(unsigned int bigValue, unsigned int smallValue, uint8_t showMinus) {
     // for debug: check constraints
     if (bigValue > 9999 || (showMinus && bigValue > 999) || smallValue > 99) {
         Serial.print("Value too big: ");
@@ -118,7 +123,7 @@ inline void DisplayControlClass::setValue(unsigned int bigValue, unsigned int sm
     }
 }
 
-inline void DisplayControlClass::setBrightness(byte brightness) {
+inline void DisplayControlClass::setBrightness(uint8_t brightness) {
     if (brightness <= MAX_BRIGHTNESS && brightness >= MIN_BRIGHTNESS) {
         currBrightness = brightness;
     }
@@ -137,7 +142,7 @@ inline void DisplayControlClass::decBrightness() {
     updateTimings();
 }
 
-inline void DisplayControlClass::setDP(byte ledSegment, byte value) {
+inline void DisplayControlClass::setDP(uint8_t ledSegment, uint8_t value) {
     DPstate[ledSegment] = (value > 0) ? 0x80 : 0;
     if (ledSegment < LED_DISPLAYS_BIG_CNT) {
         computeBigValues();
@@ -147,10 +152,10 @@ inline void DisplayControlClass::setDP(byte ledSegment, byte value) {
 }
 
 // hand-made SPI transfer routine
-inline byte DisplayControlClass::spiTransfer(byte data) {
+inline uint8_t DisplayControlClass::spiTransfer(uint8_t data) {
     SPDR = data;                    // Start the transmission
     loop_until_bit_is_set(SPSR, SPIF);
-    return SPDR;                    // return the received byte, we don't need that
+    return SPDR;                    // return the received uint8_t, we don't need that
 }
 
 #endif //_DISPLAY_CONTROL_H
