@@ -61,7 +61,6 @@ void setup() {
 #else
     // DISPLAY: setup display control
     DisplayControl.setup();
-    DisplayControl.setBrightness(7);
 #endif
 
     // setup buzzer pin

@@ -66,7 +66,6 @@ void DisplayControlClass::setup() {
     currSmallValue = 0xFF;
     currBigValue = 0xFFFF;
     setBrightness(DEFAULT_BRIGHTNESS);
-    setValue(DEFAULT_BIG_VALUE, DEFAULT_SMALL_VALUE, 1);
     displayDigit = LED_DISPLAYS_CNT - 1;
 
     // setup timer (2) interrupt
@@ -105,7 +104,9 @@ void DisplayControlClass::setupSPI() {
 }
 
 void DisplayControlClass::updateTimings() {
-    timerCounterOnEnd = BRIGHTNESS_STEP_TICKS * currBrightness;
+    // we need to have all outputs closed for at least one cycle to close MOSFETs
+    // otherwise there will be ghosting on max brightness
+    timerCounterOnEnd = BRIGHTNESS_STEP_TICKS * currBrightness - 1;
 
 #ifdef DEBUG_DISPLAY
     Serial.print("TIMINGS: timerCounterOnEnd = ");

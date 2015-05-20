@@ -6,7 +6,7 @@
  * - 6 common anode 7-segment led displays
  * - 2 chained shift registers connected to SPI port:
  *    - first: high side switch (controlling MOSFETs throuth NPN transistors) (first 6 drains)
- *    - second: low-side switch for CA segments A-G (D0-D6) and dot point (D7)
+ *    - second: low-side switch for CA segments A-G (D0-D6)
  *
  * The update is timer-interrupt driven.
  */
@@ -21,28 +21,23 @@
 #define LED_DISPLAYS_SMALL_CNT  2
 #define LED_DISPLAYS_CNT        (LED_DISPLAYS_BIG_CNT + LED_DISPLAYS_SMALL_CNT)
 
-#define MIN_BRIGHTNESS          2
+#define MIN_BRIGHTNESS          1
 #define MAX_BRIGHTNESS          10
 
-#define DEFAULT_BIG_VALUE       10
-#define DEFAULT_SMALL_VALUE     0
 #define DEFAULT_BRIGHTNESS      7
 
-//TODO: tidy it here
 #define ONE_DIGIT_US    2400
-//1000000/69.444444444444444/6/12 == 200 TICKs/digit
 
 // do not change these:
-// TODO: should we increase TIMER_DIVISOR to be call the update at a lower frequency?
 #define CLOCK_HZ        16000000
 #define TIMER_PRESCALER (64)
-#define TIMER_COMPARER  (30)
+#define TIMER_COMPARER  (15)
 #define TIMER_DIVISOR   (TIMER_PRESCALER * TIMER_COMPARER)
-#define ONE_TICK_US     (1000000L / (CLOCK_HZ / TIMER_DIVISOR)) // exactly 120us
+#define ONE_TICK_US     (1000000L / (CLOCK_HZ / TIMER_DIVISOR)) // exactly 60us
 
 
-#define ONE_DIGIT_TICKS (ONE_DIGIT_US / ONE_TICK_US)                // 20 ticks
-#define BRIGHTNESS_STEP_TICKS (ONE_DIGIT_TICKS / MAX_BRIGHTNESS)    // 2 ticks
+#define ONE_DIGIT_TICKS (ONE_DIGIT_US / ONE_TICK_US)                // 40 ticks
+#define BRIGHTNESS_STEP_TICKS (ONE_DIGIT_TICKS / MAX_BRIGHTNESS)    // 4 ticks
 
 // compute refresh rate
 #define REFRESH_RATE (1000000L / (ONE_DIGIT_US * LED_DISPLAYS_CNT)) // about 70 Hz, so 70/6 per digit
