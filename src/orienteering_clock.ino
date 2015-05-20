@@ -61,7 +61,7 @@ void setup() {
 #else
     // DISPLAY: setup display control
     DisplayControl.setup();
-    DisplayControl.setBrightness(10);
+    DisplayControl.setBrightness(7);
 #endif
 
     // setup buzzer pin
@@ -69,12 +69,8 @@ void setup() {
 
     setup_buttons();
     pinMode(14, INPUT);
-    pinMode(15, INPUT);
-    DisplayControl.setDP(1, 1);
 
 
-    //DisplayControl.setValue(10, 40, 1);
-    //DisplayControl.updateDisplay();
 
     // enable buzzer LED if needed
     //DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
@@ -88,7 +84,8 @@ void loop() {
 
     // BUTTONS: handle button presses
     update_buttons();
-    // check buttons
+
+    /// buttons state machine
     if (justpressed[BUTTON_SET_IDX]) {
         //TODO: do something here?
     }
@@ -101,9 +98,7 @@ void loop() {
         } else if (justpressed[BUTTON_UP_IDX]) {
             time_offset += 60000L; // add one minute
         } else if (justpressed[BUTTON_DOWN_IDX]) {
-            Serial.print(time_offset);
             time_offset -= 60000L; // substract one minute
-            Serial.println(time_offset);
         }
     } else {
         if (justpressed[BUTTON_UP_IDX]) {
@@ -114,16 +109,17 @@ void loop() {
     }
 
     if (justpressed[BUTTON_MODE_IDX]) {
-        // toggle buzzer
+        // TODO: change mode
+        // TODO: toggle buzzer using different button?
         buzzerActive = !buzzerActive;
         if (!buzzerActive && buzzerState) { // buzzer is now "playing" - silence it
             buzzerState = 0;
             digitalWrite(BUZZ_CTL, 0);
         }
-        DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
+        //DisplayControl.setDP(buzzerLed, (buzzerActive != 0));
     }
 
-    // update time
+    /// update time
     long int curr_secs = millis() + time_offset;
     long int curr_ms = curr_secs % 1000;
     curr_secs = curr_secs / 1000;
@@ -131,27 +127,21 @@ void loop() {
     unsigned int only_secs = abs(curr_secs % 60);
     DisplayControl.setValue(curr_mins, only_secs, (curr_secs < 0));
 
-    // handle buzzer
+
+    /// handle buzzer
     if (buzzerActive) {
         if (curr_secs < 0) { // change negative values to proper ones
           only_secs = 59 - only_secs; //only_secs = 59..0
           curr_ms = 999 + curr_ms; //curr_ms = -999... 0
         }
-
         if (only_secs > 55 || only_secs == 0) {
-            //Serial.println(curr_ms);
-            int buzzerOff = (only_secs == 0) ? BUZZER_LONG_BEEP : BUZZER_SHORT_BEEP;
+            const int buzzerOff = (only_secs == 0) ? BUZZER_LONG_BEEP : BUZZER_SHORT_BEEP;
             if (curr_ms < buzzerOff && buzzerState == 0) {
                 Serial.print("BUZZ ON: ");
                 Serial.println(curr_ms);
-                 float voltage = analogRead(0);
-                  Serial.print("ANALOG 0: ");
-                  Serial.println(voltage);
-                  voltage = analogRead(1);
-                  Serial.print("ANALOG 1: ");
-                  Serial.println(voltage);
-
-
+                int voltage = analogRead(0);
+                Serial.print("ANALOG 0: ");
+                Serial.println(voltage);
                 buzzerState = 1;
                 digitalWrite(BUZZ_CTL, 1);
             } else if (curr_ms >= buzzerOff && buzzerState == 1) {
@@ -163,19 +153,5 @@ void loop() {
         }
     }
 
-    /*
-    if (Serial.available() > 0) {
-        // read the incoming byte:
-        byte byte1 = Serial.read();
-        val = val * 10 + (byte1 - '0');
-        count += 1;
-        if (count == 2) {
-            Serial.print("I received: ");
-            Serial.println(val, DEC);
-            DisplayControl.setValue(1234, val, 0);
-            count = 0; val = 0;
-        }
-    }
-    */
 }
 

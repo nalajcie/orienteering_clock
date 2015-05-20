@@ -5,7 +5,6 @@
 
 /* TODO: license
  *
- * Some code based on SevenSeg library by Sigvald Marholm (http://playground.arduino.cc/Main/SevenSeg)
  */
 
 //#define DEBUG_BUTTONS
@@ -41,7 +40,7 @@ void update_buttons() {
     byte index;
 
     long int curr_ms = millis();
-    // TODO: will not happen?
+    // will not happen - we do not plan running for 49 days straight
     if (curr_ms < lasttime) { // we wrapped around, lets just try again
         lasttime = curr_ms;
     }

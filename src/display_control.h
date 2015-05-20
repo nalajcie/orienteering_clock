@@ -28,13 +28,21 @@
 #define DEFAULT_SMALL_VALUE 0
 #define DEFAULT_BRIGHTNESS  7
 
-#define REFRESH_RATE 80 // in Hz
+//TODO: tidy it here
+#define DESIRED_REFRESH_RATE (625/9) // about 70 Hz, so 70/6 per digit, ONE_DIGIT_TICKS == 200
+//1000000/69.444444444444444/6/12 == 200 TICKs/digit
 
 // do not change these:
-#define ONE_CYCLE_MS (1000000L / REFRESH_RATE)
-#define ONE_DIGIT_MS (ONE_CYCLE_MS / LED_DISPLAYS_CNT)
+// TODO: showud we increase TIMER_DIVISOR to be call the update at a lower frequency?
+#define CLOCK_HZ 16000000
+#define TIMER_DIVISOR (64*3)
+#define ONE_TICK_US (1000000L / (CLOCK_HZ / TIMER_DIVISOR)) // exactly 12us
 
-#define TIMER_DIVIDER_MS 16
+#define ONE_CYCLE_US (1000000L / DESIRED_REFRESH_RATE)
+#define ONE_DIGIT_US (ONE_CYCLE_US / LED_DISPLAYS_CNT)  // for 50Hz: 3333.3333
+
+#define ONE_DIGIT_TICKS  (ONE_DIGIT_US / ONE_TICK_US)
+
 
 enum DisplayState {
     DISPLAY_ON,
@@ -86,7 +94,6 @@ private:
     static byte displayDigit;
     static long int timerCounter;
     static long int timerCounterOnEnd;
-    static long int timerCounterOffEnd;
 };
 
 extern DisplayControlClass DisplayControl;
