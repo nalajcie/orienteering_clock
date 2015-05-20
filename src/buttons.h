@@ -18,10 +18,10 @@ extern byte justreleased[];
 
 
 // setup function
-void setup_buttons();
+void buttons_setup();
 
 // run it in main loop
-void update_buttons();
+void buttons_update();
 
 #ifdef __cplusplus 
 }

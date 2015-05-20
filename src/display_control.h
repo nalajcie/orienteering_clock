@@ -12,6 +12,7 @@
  */
 
 #include <Arduino.h>
+#include "test.h"
 
 // enable for debugging
 #define DEBUG_DISPLAY
@@ -50,107 +51,30 @@
 
 //BIG TODO: change to PURE C, to enable static linkage (!!!)
 
-class DisplayControlClass {
-public:
-    // setup SPI and timer interrupts - call at start
-    static void setup();
-    // set value to be displayed. Supports only integer values. Flag to show '-' in big display.
-    static inline void setValue(unsigned int bigValue, unsigned int smallValue, uint8_t showMinus);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    static inline void setBrightness(uint8_t brightness); // set brightness level. valid values: MIN-MAX_BRIGHTNESS
-    static inline void incBrightness(); // decrease brightness level till MIN_BRIGHTNESS
-    static inline void decBrightness(); // increase brightness level till MAX_BRIGHTNESS
+// setup SPI and timer interrupts - call at start
+void display_setup();
+// set value to be displayed. Supports only integer values. Flag to show '-' in big display.
+void display_setValue(unsigned int bigValue, unsigned int smallValue, uint8_t showMinus);
 
-    // enable/disable dot point at given LED segment
-    static inline void setDP(uint8_t ledSegment, uint8_t value);
+void display_setBrightness(uint8_t brightness); // set brightness level. valid values: MIN-MAX_BRIGHTNESS
+void display_incBrightness(); // decrease brightness level till MIN_BRIGHTNESS
+void display_decBrightness(); // increase brightness level till MAX_BRIGHTNESS
 
-    // updating display in interrupt
-    static void updateDisplay();
+// enable/disable dot point at given LED segment
+void display_setDP(uint8_t ledSegment, uint8_t value);
 
-    // SPI setup routine
-    static void setupSPI();
-    static inline uint8_t spiTransfer(uint8_t data);
+#ifdef TEST_SPI
+// SPI routines are externally visible only when 'TEST_SPI' is enabled
+void setupSPI();
+uint8_t spiTransfer(uint8_t data);
+#endif
 
 
-private:
-    // populate values to be send
-    static void computeBigValues();
-    static void computeSmallValues();
-
-    // updating display timings
-    static void updateTimings();
-
-    // variables
-    static uint8_t values[LED_DISPLAYS_CNT];  // values to be send
-    static uint8_t DPstate[LED_DISPLAYS_CNT]; // dot-point state
-
-    static unsigned int currBigValue;
-    static unsigned int currSmallValue;
-
-    static uint8_t currShowMinus;
-    static uint8_t currBrightness;
-
-    // display-connected variables
-    static uint8_t displayDigit;
-    static uint8_t timerCounter;
-    static uint8_t timerCounterOnEnd;
-};
-
-extern DisplayControlClass DisplayControl;
-
-inline void DisplayControlClass::setValue(unsigned int bigValue, unsigned int smallValue, uint8_t showMinus) {
-    // for debug: check constraints
-    if (bigValue > 9999 || (showMinus && bigValue > 999) || smallValue > 99) {
-        Serial.print("Value too big: ");
-        Serial.println(bigValue);
-        return;
-    }
-
-    if (bigValue != currBigValue || showMinus != currShowMinus) {
-        currBigValue = bigValue;
-        currShowMinus = (showMinus > 0);
-        computeBigValues();
-    }
-
-    if (smallValue != currSmallValue) {
-        currSmallValue = smallValue;
-        computeSmallValues();
-    }
+#ifdef __cplusplus
 }
-
-inline void DisplayControlClass::setBrightness(uint8_t brightness) {
-    if (brightness <= MAX_BRIGHTNESS && brightness >= MIN_BRIGHTNESS) {
-        currBrightness = brightness;
-    }
-    updateTimings();
-}
-inline void DisplayControlClass::incBrightness() {
-    if (currBrightness < MAX_BRIGHTNESS) {
-        currBrightness += 1;
-    }
-    updateTimings();
-}
-inline void DisplayControlClass::decBrightness() {
-    if (currBrightness > MIN_BRIGHTNESS) {
-        currBrightness -= 1;
-    }
-    updateTimings();
-}
-
-inline void DisplayControlClass::setDP(uint8_t ledSegment, uint8_t value) {
-    DPstate[ledSegment] = (value > 0) ? 0x80 : 0;
-    if (ledSegment < LED_DISPLAYS_BIG_CNT) {
-        computeBigValues();
-    } else {
-        computeSmallValues();
-    }
-}
-
-// hand-made SPI transfer routine
-inline uint8_t DisplayControlClass::spiTransfer(uint8_t data) {
-    SPDR = data;                    // Start the transmission
-    loop_until_bit_is_set(SPSR, SPIF);
-    return SPDR;                    // return the received uint8_t, we don't need that
-}
-
+#endif
 #endif //_DISPLAY_CONTROL_H

@@ -1,8 +1,8 @@
 #include "hw.h"
+#include "test.h"
 #include "display_control.h"
 #include "buttons.h"
 
-#define TEST_SPI 0
 
 #define BUZZER_SHORT_BEEP  100 // in ms
 #define BUZZER_LONG_BEEP   350 // in ms
@@ -17,58 +17,23 @@ int buzzerActive = 1;
 // difference between "real time" and "millis()" in milliseconds
 long time_offset;
 
-// TODO: move to debug
-void test_spi()
-{
-    pinMode(9, OUTPUT);
-    pinMode(10, OUTPUT);
-    pinMode(11, OUTPUT);
-    pinMode(12, INPUT);
-    pinMode(13, OUTPUT);
-
-    DisplayControl.setupSPI();
-    digitalWrite(9, LOW);
-    //digitalWrite(10, LOW);
-    //shiftOut(11, 13, MSBFIRST, 0x0F);
-    //shiftOut(11, 13, MSBFIRST, 0xF0);
-
-    digitalWrite(10, HIGH);
-    byte incoming0 = DisplayControl.spiTransfer(0x0F);
-    byte incoming1 = DisplayControl.spiTransfer(0xF0);
-    byte incoming2 = DisplayControl.spiTransfer(0x0F);
-    byte incoming3 = DisplayControl.spiTransfer(0xF0);
-    digitalWrite(10, LOW);
-    digitalWrite(10, HIGH);
-
-    Serial.print("SENT: 0x0F RECEIVED: ");
-    Serial.println(incoming0);
-    Serial.print("SENT: 0xF0 RECEIVED: ");
-    Serial.println(incoming1);
-    Serial.print("SENT: 0x0F RECEIVED: ");
-    Serial.println(incoming2);
-    Serial.print("SENT: 0xF0 RECEIVED: ");
-    Serial.println(incoming3);
-}
-
-
 void setup() {
     // DEBUG: initialize serial
     Serial.begin(9600);
     Serial.println("reset");
 
-#if TEST_SPI
+#ifdef TEST_SPI
     test_spi();
 #else
     // DISPLAY: setup display control
-    DisplayControl.setup();
+    display_setup();
 #endif
 
     // setup buzzer pin
     pinMode(BUZZ_CTL, OUTPUT);
 
-    setup_buttons();
+    buttons_setup();
     pinMode(14, INPUT);
-
 
 
     // enable buzzer LED if needed
@@ -82,7 +47,7 @@ void setup() {
 void loop() {
 
     // BUTTONS: handle button presses
-    update_buttons();
+    buttons_update();
 
     /// buttons state machine
     if (justpressed[BUTTON_SET_IDX]) {
@@ -101,9 +66,9 @@ void loop() {
         }
     } else {
         if (justpressed[BUTTON_UP_IDX]) {
-            DisplayControl.incBrightness();
+            display_incBrightness();
         } else if (justpressed[BUTTON_DOWN_IDX]) {
-            DisplayControl.decBrightness();
+            display_decBrightness();
         }
     }
 
@@ -124,7 +89,7 @@ void loop() {
     curr_secs = curr_secs / 1000;
     unsigned int curr_mins = abs(curr_secs / 60);
     unsigned int only_secs = abs(curr_secs % 60);
-    DisplayControl.setValue(curr_mins, only_secs, (curr_secs < 0));
+    display_setValue(curr_mins, only_secs, (curr_secs < 0));
 
 
     /// handle buzzer
@@ -151,6 +116,4 @@ void loop() {
             }
         }
     }
-
 }
-

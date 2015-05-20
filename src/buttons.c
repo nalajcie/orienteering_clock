@@ -22,7 +22,7 @@ byte buttons[] = {BUTTON_UP, BUTTON_DOWN, BUTTON_SET, BUTTON_MODE};
 byte pressed[NUMBUTTONS], justpressed[NUMBUTTONS], justreleased[NUMBUTTONS];
 
 
-void setup_buttons() {
+void buttons_setup() {
     // Make input & enable pull-up resistors on switch pins
     int i;
     for (i = 0; i < NUMBUTTONS; ++i) {
@@ -32,7 +32,7 @@ void setup_buttons() {
 }
 
 // check the buttons state (with debouncing)
-void update_buttons() {
+void buttons_update() {
     static byte previousstate[NUMBUTTONS];
     static byte currentstate[NUMBUTTONS];
     static long next_press[NUMBUTTONS];     // when the key should be auto-repeated
