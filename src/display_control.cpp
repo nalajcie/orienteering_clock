@@ -308,13 +308,18 @@ void display_showBuzzState(int buzzState) {
 
 void display_showBattState(int percent) {
     override_big = word_BATT;
+    if (percent > 99) {
+        override_small[0] = VALUE_MINUS;
+        override_small[1] = VALUE_MINUS;
+    } else {
 #ifndef BUG_INVERTED_SMALL_DISPLAYS
-    override_small[0] = digit_values[percent / 10];
-    override_small[1] = digit_values[percent % 10];
+        override_small[0] = digit_values[percent / 10];
+        override_small[1] = digit_values[percent % 10];
 #else
-    override_small[0] = digit_values[percent % 10];
-    override_small[1] = digit_values[percent / 10];
+        override_small[0] = digit_values[percent % 10];
+        override_small[1] = digit_values[percent / 10];
 #endif
+    }
 
     override_times = REFRESH_RATE * LED_DISPLAYS_CNT; // about 1s
 }

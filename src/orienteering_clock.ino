@@ -7,10 +7,22 @@
 #define BUZZER_SHORT_BEEP  100 // in ms
 #define BUZZER_LONG_BEEP   350 // in ms
 
+#define VOLTAGE_0          670
+#define VOLTAGE_100        870
 
 int buzzerState = 0;
 int buzzerActive = 1;
 
+int battPercent = 0;
+
+static void readBattVoltage() {
+    int voltage = analogRead(0);
+    battPercent = (voltage - VOLTAGE_0) / 2;
+    Serial.print("ANALOG 0: ");
+    Serial.println(voltage);
+    Serial.print("percent: ");
+    Serial.println(battPercent);
+}
 
 // difference between "real time" and "millis()" in milliseconds
 long time_offset;
@@ -68,7 +80,6 @@ void loop() {
 
     if (justpressed[BUTTON_MODE_IDX]) {
         // TODO: change mode
-        // TODO: toggle buzzer using different button?
         buzzerActive = !buzzerActive;
         if (!buzzerActive && buzzerState) { // buzzer is now "playing" - silence it
             buzzerState = 0;
@@ -76,6 +87,13 @@ void loop() {
         }
         display_showBuzzState(buzzerActive);
     }
+
+#ifdef HAS_BUTTON_BATT
+    if (justpressed[BUTTON_BATT_IDX]) {
+        readBattVoltage();
+        display_showBattState(battPercent);
+    }
+#endif // HAS_BUTTON_BATT
 
     /// update time
     long int curr_secs = millis() + time_offset;
@@ -95,16 +113,10 @@ void loop() {
         if (only_secs > 55 || only_secs == 0) {
             const int buzzerOff = (only_secs == 0) ? BUZZER_LONG_BEEP : BUZZER_SHORT_BEEP;
             if (curr_ms < buzzerOff && buzzerState == 0) {
-                Serial.print("BUZZ ON: ");
-                Serial.println(curr_ms);
-                int voltage = analogRead(0);
-                Serial.print("ANALOG 0: ");
-                Serial.println(voltage);
                 buzzerState = 1;
                 digitalWrite(BUZZ_CTL, 1);
+                readBattVoltage();
             } else if (curr_ms >= buzzerOff && buzzerState == 1) {
-                Serial.print("BUZZ OFF: ");
-                Serial.println(curr_ms);
                 buzzerState = 0;
                 digitalWrite(BUZZ_CTL, 0);
             }
