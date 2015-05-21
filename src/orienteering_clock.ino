@@ -13,7 +13,7 @@
 #define VOLTAGE_0          670
 #define VOLTAGE_100        870
 
-#define VOLTAGE_SENSE_EVERY_MS        200 // 0.2 second
+#define VOLTAGE_SENSE_EVERY_MS        3000 // 0.2 second
 
 int8_t buzzerState = 0;
 int8_t buzzerActive = 1;
@@ -36,7 +36,7 @@ static void voltage_update(long int curr_time) {
 
     // simple averaging on last 4 readouts
     // TODO: check if it's not too much forgiving
-    uint16_t v = analogRead(VIN_SENSE_PIN - 13);
+    uint16_t v = analogRead(VIN_SENSE_PIN - 14);
     v_sum_avg += v - v_avg;
     v_avg = v_sum_avg / 4;
     battPercent = (v_avg - VOLTAGE_0) / 2;
@@ -56,7 +56,7 @@ static void voltage_update(long int curr_time) {
 
 
 static void check_button_state(long int curr_time) {
-    /// buttons state machine
+    // buttons state machine
     // FUNCTIONS:
     // + UP, DOWN       -> INC/DEC brightness
     // + SET + UP/DOWN  -> change MINUTES
@@ -88,8 +88,8 @@ static void check_button_state(long int curr_time) {
             display_toggleMode();
         } else if (set_pressed_since > 0 && (curr_time - set_pressed_since) > SET_HOLD_MS) {
             // SET hold
-            time_offset = (time_offset / (60000L)) * (60000L);  // reset seconds
-            set_pressed_since = -1;                             // do not sense the SET hold
+            time_offset -= (time_offset + curr_time) % 60000L;   // reset seconds
+            set_pressed_since = -1;                              // do not sense the SET hold
         }
     } else {
         if (justpressed[BUTTON_UP_IDX]) {

@@ -200,7 +200,7 @@ static void computeBigValues() {
         // add leading zeros in HOURS mode
         while (valueEndIdx > 0) {
             values[valueEndIdx] = digit_values[0] | DPstate[valueEndIdx];
-            valueEndIdx += 1;
+            valueEndIdx -= 1;
         }
     }
 
