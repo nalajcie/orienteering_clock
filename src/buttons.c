@@ -11,15 +11,15 @@
 
 // here is where we define the buttons that we'll use. button "1" is the first, button "5" is the 5th, etc
 #ifdef HAS_BUTTON_BATT
-byte buttons[] = {BUTTON_UP, BUTTON_DOWN, BUTTON_SET, BUTTON_MODE, BUTTON_BATT};
+uint8_t buttons[] = {BUTTON_UP, BUTTON_DOWN, BUTTON_SET, BUTTON_MODE, BUTTON_BATT};
 #else
-byte buttons[] = {BUTTON_UP, BUTTON_DOWN, BUTTON_SET, BUTTON_MODE};
+uint8_t buttons[] = {BUTTON_UP, BUTTON_DOWN, BUTTON_SET, BUTTON_MODE};
 #endif
 
 // This handy macro lets us determine how big the array up above is, by checking the size
 #define NUMBUTTONS sizeof(buttons)
 // we will track if a button is just pressed, just released, or 'currently pressed'
-byte pressed[NUMBUTTONS], justpressed[NUMBUTTONS], justreleased[NUMBUTTONS];
+uint8_t pressed[NUMBUTTONS], justpressed[NUMBUTTONS], justreleased[NUMBUTTONS];
 
 
 void buttons_setup() {
@@ -32,18 +32,19 @@ void buttons_setup() {
 }
 
 // check the buttons state (with debouncing)
-void buttons_update() {
+void buttons_update(long int curr_ms) {
     static byte previousstate[NUMBUTTONS];
     static byte currentstate[NUMBUTTONS];
     static long next_press[NUMBUTTONS];     // when the key should be auto-repeated
     static long lasttime;
     byte index;
 
-    long int curr_ms = millis();
+#if 0
     // will not happen - we do not plan running for 49 days straight
     if (curr_ms < lasttime) { // we wrapped around, lets just try again
         lasttime = curr_ms;
     }
+#endif
 
     // when we start, we clear out the "just" indicators
     for (index = 0; index < NUMBUTTONS; ++index) {
@@ -62,6 +63,7 @@ void buttons_update() {
         currentstate[index] = digitalRead(buttons[index]);   // read the button
 
 #ifdef DEBUG_BUTTONS
+        // TODO: rename to cpp to use Serial module
         Serial.print(index, DEC);
         Serial.print(": cstate=");
         Serial.print(currentstate[index], DEC);

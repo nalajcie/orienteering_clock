@@ -18,6 +18,7 @@ unsigned int currSmallValue;
 
 uint8_t currShowMinus;
 uint8_t currBrightness;
+uint8_t currMode;
 
 // display-related variables
 uint8_t displayDigit;
@@ -54,7 +55,11 @@ static const uint8_t word_BATT[] = {0x7F, 0x77, 0x31, 0x31};
 #define LATCH_PIN_PORTB (DISPLAY_LATCH_PIN - 8)
 #define G_PIN_PORTB     (DISPLAY_G_PIN - 8)
 
+///-------------------///
 /// INTERNAL ROUTINES ///
+///-------------------///
+
+///////// SPI-related functions ////////////
 
 #ifndef TEST_SPI
 static
@@ -84,6 +89,8 @@ uint8_t spiTransfer(uint8_t data) {
     loop_until_bit_is_set(SPSR, SPIF);
     return SPDR;                    // return the received uint8_t, we don't need that
 }
+
+///////// TIMER-related functions ////////////
 
 static void setupTimer() {
     // setup timer (2) interrupt
@@ -153,12 +160,23 @@ static void updateDisplay() {
     timerCounter = (timerCounter + 1) % ONE_DIGIT_TICKS;
 }
 
-// TODO: display leading '0's in hour mode
+// connect updateDisplay to timer(2) interrupt
+ISR(TIMER1_COMPA_vect) {
+    updateDisplay();
+}
+
+///////// TIMER-related functions ////////////
+
 static void computeBigValues() {
-    int index = LED_DISPLAYS_BIG_CNT - 1;
     int value = currBigValue;
-    int currDigit;
-    int valueEndIdx = -1;
+    int8_t index = LED_DISPLAYS_BIG_CNT - 1;
+    uint8_t currDigit;
+    int8_t valueEndIdx = -1;
+
+    if (currMode == MODE_HOURS) {
+        // change MINUTES to HOURS.MINUTES
+        value = (value / 60) * 100 + value % 60;
+    }
 
     // set ALL value registers to clear previous digits and set DPstate
     // use do-while to display at least one '0'
@@ -178,6 +196,14 @@ static void computeBigValues() {
         index -= 1;
     } while (index >= 0);
 
+    if (currMode == MODE_HOURS) {
+        // add leading zeros in HOURS mode
+        while (valueEndIdx > 0) {
+            values[valueEndIdx] = digit_values[0] | DPstate[valueEndIdx];
+            valueEndIdx += 1;
+        }
+    }
+
     if (currShowMinus && (valueEndIdx >= 0)) {
         values[valueEndIdx] = VALUE_MINUS | DPstate[valueEndIdx];
     }
@@ -196,9 +222,9 @@ static void computeSmallValues() {
     int value = currSmallValue;
     int currDigit;
 #ifndef BUG_INVERTED_SMALL_DISPLAYS
-  int index = LED_DISPLAYS_BIG_CNT + LED_DISPLAYS_SMALL_CNT - 1;
+    int index = LED_DISPLAYS_BIG_CNT + LED_DISPLAYS_SMALL_CNT - 1;
 #else
-  int index = LED_DISPLAYS_BIG_CNT;
+    int index = LED_DISPLAYS_BIG_CNT;
 #endif
     // always display leading '0's
     do {
@@ -215,7 +241,9 @@ static void computeSmallValues() {
 #endif
 }
 
+///--------------------///
 /// EXTERNAL INTERFACE ///
+///--------------------///
 void display_setup() {
 #ifdef DEBUG_DISPLAY
     Serial.println("DC::setup");
@@ -232,8 +260,10 @@ void display_setup() {
     // init values
     memset(DPstate, 0, sizeof(DPstate));
     memset(values, 0, sizeof(values));
+    currMode = MODE_MINUTES;
+    currBrightness = DEFAULT_BRIGHTNESS;
     override_times = 0;
-    display_setBrightness(DEFAULT_BRIGHTNESS);
+    timerCounter = 0;
     displayDigit = LED_DISPLAYS_CNT - 1;
 
     // force change at first
@@ -246,12 +276,14 @@ void display_setup() {
 }
 
 void display_setValue(unsigned int bigValue, unsigned int smallValue, uint8_t showMinus) {
+#ifdef DEBUG_DISPLAY
     // for debug: check constraints
     if (bigValue > 9999 || (showMinus && bigValue > 999) || smallValue > 99) {
         Serial.print("Value too big: ");
         Serial.println(bigValue);
         return;
     }
+#endif
 
     if (bigValue != currBigValue || showMinus != currShowMinus) {
         currBigValue = bigValue;
@@ -293,6 +325,17 @@ void display_setDP(uint8_t ledSegment, uint8_t value) {
     }
 }
 
+void display_setMode(uint8_t mode) {
+    // add 'comma' point
+    DPstate[1] = (mode == MODE_HOURS) ? 0x80 : 0;
+    currMode = mode;
+    computeBigValues();
+}
+
+void display_toggleMode() {
+    display_setMode(!currMode);
+}
+
 void display_showBuzzState(int buzzState) {
     override_big = word_BUZZ;
 #ifndef BUG_INVERTED_SMALL_DISPLAYS
@@ -324,7 +367,3 @@ void display_showBattState(int percent) {
     override_times = REFRESH_RATE * LED_DISPLAYS_CNT; // about 1s
 }
 
-// connect updateDisplay to timer(2) interrupt
-ISR(TIMER1_COMPA_vect) {
-    updateDisplay();
-}

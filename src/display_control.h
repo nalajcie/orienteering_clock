@@ -41,7 +41,7 @@
 #define BRIGHTNESS_STEP_TICKS (ONE_DIGIT_TICKS / MAX_BRIGHTNESS)    // 4 ticks
 
 // compute refresh rate
-#define REFRESH_RATE (1000000L / (ONE_DIGIT_US * LED_DISPLAYS_CNT)) // about 70 Hz, so 70/6 per digit
+#define REFRESH_RATE (1000000L / (ONE_DIGIT_US * LED_DISPLAYS_CNT)) // about 70 Hz (every digit)
 
 
 // check if storage class for timerCounter is OK - will not get higher than ONE_DIGIT_TICKS + 1
@@ -49,16 +49,15 @@
 #warning "ONE_DIGIT_TICKS too large, increase storage class for timerCounter"
 #endif
 
-//BIG TODO: change to PURE C, to enable static linkage (!!!)
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // setup SPI and timer interrupts - call at start
 void display_setup();
 // set value to be displayed. Supports only integer values. Flag to show '-' in big display.
 void display_setValue(unsigned int bigValue, unsigned int smallValue, uint8_t showMinus);
+
+#define MODE_MINUTES    0
+#define MODE_HOURS      1
+void display_setMode(uint8_t mode);
+void display_toggleMode();
 
 void display_showBuzzState(int buzzState);
 void display_showBattState(int percent);
@@ -76,8 +75,4 @@ void setupSPI();
 uint8_t spiTransfer(uint8_t data);
 #endif
 
-
-#ifdef __cplusplus
-}
-#endif
 #endif //_DISPLAY_CONTROL_H

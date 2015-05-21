@@ -2,7 +2,7 @@
 #ifndef _HW_H
 #define _HW_H
 
-#define CURR_HW_REVISION 2
+#define CURR_HW_REVISION        2
 
 
 

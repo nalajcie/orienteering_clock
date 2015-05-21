@@ -12,16 +12,16 @@
 extern "C" {
 #endif
 
-extern byte pressed[];
-extern byte justpressed[];
-extern byte justreleased[];
+extern uint8_t pressed[];
+extern uint8_t justpressed[];
+extern uint8_t justreleased[];
 
 
 // setup function
 void buttons_setup();
 
 // run it in main loop
-void buttons_update();
+void buttons_update(long int curr_ms);
 
 #ifdef __cplusplus 
 }
