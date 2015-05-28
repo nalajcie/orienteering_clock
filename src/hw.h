@@ -20,9 +20,9 @@
 #define DISPLAY_SPI_SCK_PIN     13
 
 /* buttons - the analog 0-3 pins are also known as 14-17 */
-#define BUTTON_UP               14
-#define BUTTON_DOWN             15
-#define BUTTON_SET              16
+#define BUTTON_SET              14
+#define BUTTON_UP               15
+#define BUTTON_DOWN             16
 #define BUTTON_MODE             17
 
 /* indexes in the table */
