@@ -1,0 +1,28 @@
+
+
+1. Left panel (4 push buttons): 130mm, 1 button = 15mm (drill hole = 12mm)
+130 - 15*4 = 70mm
+2 * side + 3 * spacer = 70 mm
+side = 5mm
+spacer = 20mm
+schema:
+|-5mm-|<B1-15mm>|-s-20mm|<B2-15mm>|-s-20mm|<B3-15mm>|-s-20mm|<B4-15mm>|-5mm-|
+
+SIDE HOLES DISTANCE = 5 + 15/2 = 12.5
+DRILL HOLES DISTANCE = 20 + 15 = 35
+
+HEIGHT: 25mm from top, 34mm from bottom
+
+2. Right panel (1 push button (15mm, hole 12mm) + 2 ROCKET switches (15x21, hole 12.9x18.9))
+
+130 - 15*3 = 85 mm
+
+2 * side + 2 * spacer = 85 mm
+side = 20mm
+spacer = 22mm
+
+29.5 + 1.5 = 31
+holes schema:
+|--27.5--|PB1|--31--|RB1-12mm|--25--|RB2-12mm|--21.5mm--|
+
+HEIGHT: 16mm from bottom
