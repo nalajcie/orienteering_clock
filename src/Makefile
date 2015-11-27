@@ -3,8 +3,8 @@
 
 ifeq ($(OS),Windows_NT)
     # configuration
-    ARDMK_DIR	= ../Arduino-Makefile/
-    ARDUINO_DIR	= ../../../Arduino/
+    ARDMK_DIR	= ../Arduino-Makefile
+    ARDUINO_DIR	= ../../../Arduino
     ISP_PROG    = usbasp
     ISP_PORT    = usb
 endif
