@@ -27,6 +27,10 @@
 
 #define DEFAULT_BRIGHTNESS      7
 
+#define BRIGHTNESS_WARN         5
+#define BRIGHTNESS_LOW          3
+#define BRIGHTNESS_CRITICAL     1
+
 #define ONE_DIGIT_US    2400
 
 // do not change these:
@@ -65,6 +69,7 @@ void display_showBattState(int percent);
 void display_setBrightness(uint8_t brightness); // set brightness level. valid values: MIN-MAX_BRIGHTNESS
 void display_incBrightness(); // decrease brightness level till MIN_BRIGHTNESS
 void display_decBrightness(); // increase brightness level till MAX_BRIGHTNESS
+void display_setMaxBrightness(uint8_t max_brightness); // set temporary maximum brightness level. valid values: MIN-MAX_BRIGHTNESS
 
 // enable/disable dot point at given LED segment
 void display_setDP(uint8_t ledSegment, uint8_t value);

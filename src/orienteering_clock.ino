@@ -10,10 +10,17 @@
 
 #define SET_HOLD_MS        3000 // 3 seconds
 
+// raw values read by analog input
 #define VOLTAGE_0          670
 #define VOLTAGE_100        870
 
-#define VOLTAGE_SENSE_EVERY_MS        200 // 0.2 second
+#define BATT_PERCENT_OK          100
+#define BATT_PERCENT_WARN        50
+#define BATT_PERCENT_LOW         30
+#define BATT_PERCENT_CRITICAL    10
+#define BATT_PERCENT_CRITICAL    10
+
+#define VOLTAGE_SENSE_EVERY_MS        500 // 0.5 second
 
 int8_t buzzerState = 0;
 int8_t buzzerActive = 1;
@@ -22,11 +29,24 @@ int16_t battPercent = 0;
 // difference between "real time" and "millis()" in milliseconds
 long time_offset;
 
+static int8_t get_batt_level(int8_t percent) {
+    if (percent > BATT_PERCENT_WARN) {
+        return BATT_PERCENT_OK;
+    } else if (percent > BATT_PERCENT_LOW) {
+        return BATT_PERCENT_WARN;
+    } else if (percent > BATT_PERCENT_CRITICAL) {
+        return BATT_PERCENT_LOW;
+    } else {
+        return BATT_PERCENT_CRITICAL;
+    }
+}
+
 static void voltage_update(long int curr_time) {
 #ifdef HAS_VIN_SENSE
     static long int last_volt_sense = 0;
     static uint16_t v_avg = (VOLTAGE_0 + VOLTAGE_100) / 2;
     static uint16_t v_sum_avg = v_avg * 4;
+    static uint8_t batt_level = BATT_PERCENT_OK;
 
     if ((curr_time - last_volt_sense) < VOLTAGE_SENSE_EVERY_MS) {
         return;
@@ -35,21 +55,43 @@ static void voltage_update(long int curr_time) {
     last_volt_sense = curr_time;
 
     // simple averaging on last 4 readouts
-    // TODO: check if it's not too much forgiving
     uint16_t v = analogRead(VIN_SENSE_PIN - 14);
     v_sum_avg += v - v_avg;
     v_avg = v_sum_avg / 4;
-    battPercent = (v_avg - VOLTAGE_0) / 2;
+    if (v_avg > VOLTAGE_0) {
+        battPercent = (v_avg - VOLTAGE_0) / 2;
+    } else {
+        battPercent = 0;
+    }
+
+    int8_t new_batt_level = get_batt_level(battPercent);
+    if (new_batt_level != batt_level) {
+        // state transition - TODO: add more visual aids!
+        batt_level = new_batt_level;
+        switch (batt_level) {
+            case BATT_PERCENT_OK:
+                display_setMaxBrightness(MAX_BRIGHTNESS);
+                break;
+            case BATT_PERCENT_WARN:
+                display_setMaxBrightness(BRIGHTNESS_WARN);
+                break;
+            case BATT_PERCENT_LOW:
+                display_setMaxBrightness(BRIGHTNESS_LOW);
+                break;
+            case BATT_PERCENT_CRITICAL:
+                display_setMaxBrightness(BRIGHTNESS_CRITICAL);
+                break;
+        }
+    }
+
 
 #ifdef DEBUG_SERIAL
-    Serial.print("ANALOG 0: ");
-    Serial.println(v);
-    Serial.print("SUM: ");
-    Serial.println(v_sum_avg);
-    Serial.print("AVG: ");
-    Serial.println(v_avg);
-    Serial.print("percent: ");
-    Serial.println(battPercent);
+    Serial.print("BATTERY STATE: ");
+    Serial.print("\tANALOG 0: ");       Serial.println(v);
+    Serial.print("\tSUM: ");            Serial.println(v_sum_avg);
+    Serial.print("\tAVG: ");            Serial.println(v_avg);
+    Serial.print("\tpercent: ");        Serial.println(battPercent);
+    Serial.print("\tlevel: ");          Serial.println(battPercent);
 #endif
 #endif
 }

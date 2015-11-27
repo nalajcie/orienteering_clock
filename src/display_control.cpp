@@ -13,23 +13,24 @@
 static uint8_t values[LED_DISPLAYS_CNT];  // values to be send
 static uint8_t DPstate[LED_DISPLAYS_CNT]; // dot-point state
 
-unsigned int currBigValue;
-unsigned int currSmallValue;
+static unsigned int currBigValue;
+static unsigned int currSmallValue;
 
-uint8_t currShowMinus;
-uint8_t currBrightness;
-uint8_t currMode;
+static uint8_t currShowMinus;
+static uint8_t currBrightness;
+static uint8_t currMaxBrightness;
+static uint8_t currMode;
 
 // display-related variables
-uint8_t displayDigit;
-uint8_t timerCounter;
-uint8_t timerCounterOnEnd;
+static uint8_t displayDigit;
+static uint8_t timerCounter;
+static uint8_t timerCounterOnEnd;
 
 // support overriding default output with other text
 static const uint8_t* override_big;
 static uint8_t override_small[2];
 
-uint16_t override_times;
+static uint16_t override_times;
 
 
 // values for each of the digit
@@ -261,6 +262,7 @@ void display_setup() {
     memset(DPstate, 0, sizeof(DPstate));
     memset(values, 0, sizeof(values));
     currMode = MODE_MINUTES;
+    currMaxBrightness = MAX_BRIGHTNESS;
     currBrightness = DEFAULT_BRIGHTNESS;
     override_times = 0;
     timerCounter = 0;
@@ -298,13 +300,13 @@ void display_setValue(unsigned int bigValue, unsigned int smallValue, uint8_t sh
 }
 
 void display_setBrightness(uint8_t brightness) {
-    if (brightness <= MAX_BRIGHTNESS && brightness >= MIN_BRIGHTNESS) {
+    if (brightness <= currMaxBrightness && brightness >= MIN_BRIGHTNESS) {
         currBrightness = brightness;
     }
     updateTimings();
 }
 void display_incBrightness() {
-    if (currBrightness < MAX_BRIGHTNESS) {
+    if (currBrightness < currMaxBrightness) {
         currBrightness += 1;
     }
     updateTimings();
@@ -314,6 +316,23 @@ void display_decBrightness() {
         currBrightness -= 1;
     }
     updateTimings();
+}
+void display_setMaxBrightness(uint8_t max_brightness) {
+    uint8_t old_brightness = currMaxBrightness;
+    currMaxBrightness = max_brightness;
+
+    // (1) lowering down max brightness - check if we need to lower down current brightness
+    if (max_brightness < old_brightness) {
+        if (currBrightness > currMaxBrightness) {
+            currBrightness = currMaxBrightness;
+            updateTimings();
+        }
+    } else {
+        // (2) going up with max brightness - try to increase current brightness
+        while (currBrightness < DEFAULT_BRIGHTNESS) {
+            display_incBrightness();
+        }
+    }
 }
 
 void display_setDP(uint8_t ledSegment, uint8_t value) {
