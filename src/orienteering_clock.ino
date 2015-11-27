@@ -13,7 +13,7 @@
 #define VOLTAGE_0          670
 #define VOLTAGE_100        870
 
-#define VOLTAGE_SENSE_EVERY_MS        3000 // 0.2 second
+#define VOLTAGE_SENSE_EVERY_MS        200 // 0.2 second
 
 int8_t buzzerState = 0;
 int8_t buzzerActive = 1;
@@ -25,8 +25,8 @@ long time_offset;
 static void voltage_update(long int curr_time) {
 #ifdef HAS_VIN_SENSE
     static long int last_volt_sense = 0;
-    static uint16_t v_sum_avg = 0;
-    static uint16_t v_avg = 0;
+    static uint16_t v_avg = (VOLTAGE_0 + VOLTAGE_100) / 2;
+    static uint16_t v_sum_avg = v_avg * 4;
 
     if ((curr_time - last_volt_sense) < VOLTAGE_SENSE_EVERY_MS) {
         return;
