@@ -145,6 +145,11 @@ void setup() {
     // DISPLAY: setup display control
     display_setup();
 #endif
+#ifdef TEST_DISPLAY
+    for (int i = 0; i < LED_DISPLAYS_CNT; ++i) {
+        display_setDP(i, 1);
+    }
+#endif
 
     // setup buzzer pin
     pinMode(BUZZ_CTL, OUTPUT);
@@ -188,8 +193,26 @@ static void update_time_and_buzzer(long int curr_time) {
     }
 }
 
+#ifdef TEST_DISPLAY
+static void test_display(long int curr_time) {
+    static long int last_time = 0;
+    static int val = 0;
+
+    if (curr_time - last_time > 1000) {
+        last_time = curr_time;
+        val =  (val + 1) % 10;
+        display_setValue(val*1000+val*100+val*10+val, val*10+val, 0);
+    }
+}
+#endif
+
 void loop() {
     long int curr_time = millis();
+
+#ifdef TEST_DISPLAY
+    // factory testing: display
+    test_display(curr_time);
+#else
 
     // handle button presses
     buttons_update(curr_time);
@@ -198,7 +221,7 @@ void loop() {
     // update time
     update_time_and_buzzer(curr_time);
 
-    //TODO: voltage sense
+    // voltage sense
     voltage_update(curr_time);
-
+#endif
 }
