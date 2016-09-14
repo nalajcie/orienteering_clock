@@ -321,6 +321,11 @@ void display_setMaxBrightness(uint8_t max_brightness) {
     uint8_t old_brightness = currMaxBrightness;
     currMaxBrightness = max_brightness;
 
+    // (0) check if anything changes
+    if (old_brightness == currMaxBrightness) {
+        return;
+    }
+
     // (1) lowering down max brightness - check if we need to lower down current brightness
     if (max_brightness < old_brightness) {
         if (currBrightness > currMaxBrightness) {
