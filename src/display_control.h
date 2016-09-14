@@ -15,7 +15,7 @@
 #include "test.h"
 
 // enable for debugging
-#define DEBUG_DISPLAY
+//#define DEBUG_DISPLAY
 
 // configuration
 #define LED_DISPLAYS_BIG_CNT    4

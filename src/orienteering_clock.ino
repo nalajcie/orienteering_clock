@@ -3,7 +3,9 @@
 #include "display_control.h"
 #include "buttons.h"
 
-#define DEBUG_SERIAL
+#define VERSION_STR "1.0"
+
+//#define DEBUG_SERIAL
 
 #define BUZZER_SHORT_BEEP  100 // in ms
 #define BUZZER_LONG_BEEP   350 // in ms
@@ -133,11 +135,11 @@ static void check_button_state(long int curr_time) {
 }
 
 void setup() {
-#ifdef DEBUG_SERIAL
-    // DEBUG: initialize serial
+    // always initialize serial and output basic info
     Serial.begin(9600);
     Serial.println("reset");
-#endif
+    Serial.print("HW REVISION: "); Serial.println(CURR_HW_REVISION);
+    Serial.print("VERSION: "); Serial.println(VERSION_STR);
 
 #ifdef TEST_SPI
     test_spi();
