@@ -126,7 +126,9 @@ static void updateTimings() {
 // timed interrupt
 static void updateDisplay() {
     if (timerCounter == 0) { // switch to next digit and turn it on.
-        displayDigit = (displayDigit + 1) % LED_DISPLAYS_CNT;
+        do {
+            displayDigit = (displayDigit + 1) % LED_DISPLAYS_CNT;
+        } while ((override_times == 0) && (values[displayDigit] == 0));
 
         if (override_times == 0) {
             // display next digit
@@ -271,6 +273,7 @@ void display_setup() {
     // force change at first
     currSmallValue = 0xFF;
     currBigValue = 0xFFFF;
+    display_setValue(0, 0, 0);
 
     // setup timings
     setupTimer();
