@@ -3,7 +3,7 @@
 #include "display_control.h"
 #include "buttons.h"
 
-#define VERSION_STR "1.0"
+#define VERSION_STR "1.0.1"
 
 //#define DEBUG_SERIAL
 
@@ -24,12 +24,14 @@
 
 #define VOLTAGE_SENSE_EVERY_MS        500 // 0.5 second
 
-int8_t buzzerState = 0;
-int8_t buzzerActive = 1;
-int16_t battPercent = 0;
+static int8_t buzzerState = 0;
+static int8_t buzzerActive = 1;
+static int16_t battPercent = 0;
 
 // difference between "real time" and "millis()" in milliseconds
-long time_offset;
+static long time_offset;
+
+static uint8_t voltage_sense_enabled = 1;
 
 static const uint8_t battery_level_percent[]    = {0, 10, 30, 50, 255};
 static const uint8_t battery_level_brightness[] = {1, BRIGHTNESS_CRITICAL, BRIGHTNESS_LOW, BRIGHTNESS_WARN, MAX_BRIGHTNESS};
@@ -40,6 +42,10 @@ static void voltage_update(long int curr_time) {
     static uint16_t v_avg = (VOLTAGE_0 + VOLTAGE_100) / 2;
     static uint16_t v_sum_avg = v_avg * 4;
     static uint8_t batt_level = sizeof(battery_level_percent) - 1;
+
+    if (!voltage_sense_enabled) {
+        return;
+    }
 
     if ((curr_time - last_volt_sense) < VOLTAGE_SENSE_EVERY_MS) {
         return;
@@ -160,7 +166,15 @@ void setup() {
 
 #ifdef HAS_VIN_SENSE
     pinMode(VIN_SENSE_PIN, INPUT);
-#endif
+
+#ifdef HAS_BUTTON_BATT
+    // overriding VIN sense capability:
+    const uint8_t batt_not_pressed = digitalRead(BUTTON_BATT);
+    if (!batt_not_pressed) {
+        voltage_sense_enabled = 0;
+    }
+#endif // HAS_BUTTON_BATT
+#endif // HAS_VIN_SENSE
 
     // start with "-601 seconds" to display -10:00 at startup
     time_offset = -600999L - millis();
