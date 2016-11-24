@@ -22,7 +22,11 @@ ifeq ($(MAKECMDGOALS),burn_bootloader)
 	AVRDUDE_OPTS = -v -B 20.96 
 endif
 
-BOARD_TAG    = uno
+BOARD_TAG     = uno
+# differs than arduino - does not erease EEPROM
+ISP_HIGH_FUSE =0xD6
+ISP_LOW_FUSE  =0xFF
+ISP_EXT_FUSE  =0x05
 
 include ../Arduino-Makefile/Arduino.mk
 
