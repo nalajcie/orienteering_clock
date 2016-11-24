@@ -2,6 +2,7 @@
 #include "test.h"
 #include "display_control.h"
 #include "buttons.h"
+#include "mem.h"
 
 #define VERSION_STR F("1.0.1")
 
@@ -131,6 +132,7 @@ static void check_button_state(long int curr_time) {
                 digitalWrite(BUZZ_CTL, 0);
             }
             display_showBuzzState(buzzerActive);
+            mem_set_buzzer_active(buzzerActive);
         }
 #ifdef HAS_BUTTON_BATT
         else if (justpressed[BUTTON_BATT_IDX]) {
@@ -144,8 +146,10 @@ void setup() {
     // always initialize serial and output basic info
     Serial.begin(9600);
     Serial.println(F("reset"));
-    Serial.print(F("hW REVISION: ")); Serial.println(CURR_HW_REVISION);
+    Serial.print(F("HW REVISION: ")); Serial.println(CURR_HW_REVISION);
     Serial.print(F("VERSION: "));     Serial.println(VERSION_STR);
+    mem_setup();
+    buzzerActive = mem_was_buzzer_active();
 
 #ifdef TEST_SPI
     test_spi();
@@ -242,5 +246,8 @@ void loop() {
 
     // voltage sense
     voltage_update(curr_time);
+
+    // saving stats to EEPROM
+    mem_update(curr_time);
 #endif
 }
