@@ -4,7 +4,7 @@
 #include "buttons.h"
 #include "mem.h"
 
-#define VERSION_STR F("1.0.1")
+#define VERSION_STR F("1.1.0")
 
 //#define DEBUG_SERIAL
 
