@@ -3,7 +3,7 @@
 #include "display_control.h"
 #include "buttons.h"
 
-#define VERSION_STR "1.0.1"
+#define VERSION_STR F("1.0.1")
 
 //#define DEBUG_SERIAL
 
@@ -72,12 +72,12 @@ static void voltage_update(long int curr_time) {
     display_setMaxBrightness(battery_level_brightness[batt_level]);
 
 #ifdef DEBUG_SERIAL
-    Serial.println("BATTERY STATE: ");
-    Serial.print("\tANALOG 0: ");       Serial.println(v);
-    Serial.print("\tSUM: ");            Serial.println(v_sum_avg);
-    Serial.print("\tAVG: ");            Serial.println(v_avg);
-    Serial.print("\tpercent: ");        Serial.println(battPercent);
-    Serial.print("\tlevel: ");          Serial.println(batt_level);
+    Serial.println(F("BATTERY STATE: "));
+    Serial.print(F("\tANALOG 0: "));       Serial.println(v);
+    Serial.print(F("\tSUM: "));            Serial.println(v_sum_avg);
+    Serial.print(F("\tAVG: "));            Serial.println(v_avg);
+    Serial.print(F("\tpercent: "));        Serial.println(battPercent);
+    Serial.print(F("\tlevel: "));          Serial.println(batt_level);
 #endif
 #endif
 }
@@ -143,9 +143,9 @@ static void check_button_state(long int curr_time) {
 void setup() {
     // always initialize serial and output basic info
     Serial.begin(9600);
-    Serial.println("reset");
-    Serial.print("HW REVISION: "); Serial.println(CURR_HW_REVISION);
-    Serial.print("VERSION: "); Serial.println(VERSION_STR);
+    Serial.println(F("reset"));
+    Serial.print(F("hW REVISION: ")); Serial.println(CURR_HW_REVISION);
+    Serial.print(F("VERSION: "));     Serial.println(VERSION_STR);
 
 #ifdef TEST_SPI
     test_spi();
@@ -179,6 +179,9 @@ void setup() {
     // start with "-601 seconds" to display -10:00 at startup
     time_offset = -600999L - millis();
 
+#ifdef DEBUG_SERIAL
+    Serial.print(F("Startup took: ")); Serial.println(millis());
+#endif
 }
 
 /// update displayed time
