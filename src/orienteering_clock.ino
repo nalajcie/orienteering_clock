@@ -33,6 +33,7 @@ static int16_t battPercent = 0;
 static long time_offset;
 
 static uint8_t voltage_sense_enabled = 1;
+static uint8_t countdown_mode = 0;
 
 static const uint8_t battery_level_percent[]    = {0, 10, 30, 50, 255};
 static const uint8_t battery_level_brightness[] = {1, BRIGHTNESS_CRITICAL, BRIGHTNESS_LOW, BRIGHTNESS_WARN, MAX_BRIGHTNESS};
@@ -180,8 +181,16 @@ void setup() {
 #endif // HAS_BUTTON_BATT
 #endif // HAS_VIN_SENSE
 
-    // start with "-601 seconds" to display -10:00 at startup
-    time_offset = -600999L - millis();
+    // if SET button is pressed at startup - start in countdown mode
+    const uint8_t mode_not_pressed = digitalRead(BUTTON_SET);
+    if (mode_not_pressed) {
+        // start with "-601 seconds" to display -10:00 at startup
+        time_offset = -600999L - millis();
+    } else {
+        // start with "-3000 seconds"
+        countdown_mode = !mode_not_pressed;
+        time_offset = -3000000L - millis();
+    }
 
 #ifdef DEBUG_SERIAL
     Serial.print(F("Startup took: ")); Serial.println(millis());
@@ -195,7 +204,13 @@ static void update_time_and_buzzer(long int curr_time) {
     curr_secs = curr_secs / 1000;
     unsigned int curr_mins = abs(curr_secs / 60);
     unsigned int only_secs = abs(curr_secs % 60);
-    display_setValue(curr_mins, only_secs, (curr_secs < 0));
+
+    if (countdown_mode) {
+        // in countdown mode we're displaying centiseconds on smaller display
+        display_setValue(abs(curr_secs), abs(curr_ms/10), 0);
+    } else {
+        display_setValue(curr_mins, only_secs, (curr_secs < 0));
+    }
 
     /// handle buzzer
     if (buzzerActive) {
