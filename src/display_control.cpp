@@ -331,10 +331,9 @@ void display_setMaxBrightness(uint8_t max_brightness) {
             updateTimings();
         }
     } else {
-        // (2) going up with max brightness - try to increase current brightness
-        while (currBrightness < DEFAULT_BRIGHTNESS) {
-            display_incBrightness();
-        }
+        // (2) going up with max brightness - increase current brightness to current max or default
+        currBrightness = min(currMaxBrightness, DEFAULT_BRIGHTNESS);
+        updateTimings();
     }
 }
 
