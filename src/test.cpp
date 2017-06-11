@@ -4,10 +4,10 @@
 #include <Arduino.h>
 
 #ifdef TEST_SPI
-// tests SPI transfers (writing and reading) 
+// tests SPI transfers (writing and reading)
 void test_spi()
 {
-    // TODO: hadcoded, move to defines  
+    // TODO: hadcoded, move to defines
     pinMode(9, OUTPUT);
     pinMode(10, OUTPUT);
     pinMode(11, OUTPUT);

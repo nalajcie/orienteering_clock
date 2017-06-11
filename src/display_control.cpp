@@ -4,11 +4,6 @@
 
 #include <Arduino.h>
 
-/* TODO: license
- *
- * Some code based on SevenSeg library by Sigvald Marholm (http://playground.arduino.cc/Main/SevenSeg)
- */
-
 // static variables
 static uint8_t values[LED_DISPLAYS_CNT];  // values to be send
 static uint8_t DPstate[LED_DISPLAYS_CNT]; // dot-point state

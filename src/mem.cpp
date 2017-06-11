@@ -11,7 +11,7 @@
 typedef struct const_params_s
 {
     uint16_t magic;     // CONST_PARAMS_MAGIC
-    char serial_no[16]; 
+    char serial_no[16];
     char prod_date[16]; // YYYY-MM-DD
 
     // todo: min/max voltage?

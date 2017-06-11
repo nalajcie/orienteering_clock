@@ -17,10 +17,6 @@
 #define VOLTAGE_0          670
 #define VOLTAGE_100        870
 
-#define BATT_PERCENT_OK          100
-#define BATT_PERCENT_WARN        50
-#define BATT_PERCENT_LOW         30
-#define BATT_PERCENT_CRITICAL    10
 #define BATT_HISTERESIS          1
 
 #define VOLTAGE_SENSE_EVERY_MS        500 // 0.5 second
