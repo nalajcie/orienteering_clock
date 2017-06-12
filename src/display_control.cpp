@@ -331,9 +331,11 @@ void display_setMaxBrightness(uint8_t max_brightness) {
             updateTimings();
         }
     } else {
+#if 0 // this introduces blinking in case of critical battery level, disable it for now
         // (2) going up with max brightness - increase current brightness to current max or default
         currBrightness = min(currMaxBrightness, DEFAULT_BRIGHTNESS);
         updateTimings();
+#endif
     }
 }
 
